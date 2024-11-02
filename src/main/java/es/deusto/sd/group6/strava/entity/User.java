@@ -33,6 +33,19 @@ public class User {
 		this.acceptedChallenges = new ArrayList<>();
 		this.trainingSessions = new ArrayList<>();
 	}
+	
+	public User(String email, String name, String surname, Date birthdate) {
+		this.email = email;
+		this.name = name;
+		this.surname = surname;
+		this.birthdate = birthdate;
+		this.weight = -1;
+		this.height = -1;
+		this.maxHeartRate = -1;
+		this.restHeartRate = -1;
+		this.acceptedChallenges = new ArrayList<>();
+		this.trainingSessions = new ArrayList<>();
+	}
 
 	public String getEmail() {
 		return email;

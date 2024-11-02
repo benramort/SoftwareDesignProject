@@ -5,6 +5,7 @@ import java.util.Date;
 public class UserDTO {
 	
 	private String email;
+	private String password;
 	private String name;
 	private String surname;
 	private Date birthdate;
@@ -15,9 +16,10 @@ public class UserDTO {
 	
 	public UserDTO() {}
 	
-	public UserDTO(String email, String name, String surname, Date birthdate, float weight, float height,
+	public UserDTO(String email, String password, String name, String surname, Date birthdate, float weight, float height,
 			float maxHeartRate, float restHeartRate) {
 		this.email = email;
+		this.password = password;
 		this.name = name;
 		this.surname = surname;
 		this.birthdate = birthdate;
@@ -33,6 +35,14 @@ public class UserDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	public String getName() {
