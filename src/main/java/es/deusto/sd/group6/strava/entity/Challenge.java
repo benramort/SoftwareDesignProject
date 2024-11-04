@@ -3,6 +3,8 @@ package es.deusto.sd.group6.strava.entity;
 import java.util.Date;
 import java.util.Objects;
 
+import es.deusto.sd.group6.strava.dto.ChallengeDTO;
+
 public class Challenge {
 	
 	private String name;
@@ -69,6 +71,10 @@ public class Challenge {
 		}
 	}
 
+	public float getGoal() {
+		return goal;
+	}
+
 	public void setGoal(float goal) {
 		this.goal = goal;
 	}
@@ -107,6 +113,12 @@ public class Challenge {
 				&& Float.floatToIntBits(goal) == Float.floatToIntBits(other.goal) && isDistance == other.isDistance
 				&& Objects.equals(name, other.name) && sport == other.sport
 				&& Objects.equals(startDate, other.startDate);
+	}
+	
+	public ChallengeDTO toDTO() 
+	{
+		ChallengeDTO challengeDTO = new ChallengeDTO(this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport());
+		return challengeDTO;
 	}
 	
 	
