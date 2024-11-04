@@ -16,7 +16,7 @@ public class User {
 	private float maxHeartRate;
 	private float restHeartRate;
 	private List<AcceptedChallenge> acceptedChallenges;
-	private List<TrainingSession> trainingSessions;
+	private List<TrainingSession> lTrainingSessions;
 	
 	public User() {}
 	
@@ -31,7 +31,7 @@ public class User {
 		this.maxHeartRate = maxHeartRate;
 		this.restHeartRate = restHeartRate;
 		this.acceptedChallenges = new ArrayList<>();
-		this.trainingSessions = new ArrayList<>();
+		this.lTrainingSessions = new ArrayList<>();
 	}
 	
 	public User(String email, String name, String surname, Date birthdate) {
@@ -44,7 +44,7 @@ public class User {
 		this.maxHeartRate = -1;
 		this.restHeartRate = -1;
 		this.acceptedChallenges = new ArrayList<>();
-		this.trainingSessions = new ArrayList<>();
+		this.lTrainingSessions = new ArrayList<>();
 	}
 
 	public String getEmail() {
@@ -120,11 +120,12 @@ public class User {
 	}
 	
 	public List<TrainingSession> getTrainingSessions() {
-		return trainingSessions;
+		return lTrainingSessions;
 	}
 	
 	public void addTrainingSession(TrainingSession trainingSession) {
-		this.trainingSessions.add(trainingSession);
+		this.lTrainingSessions.add(trainingSession);
+		lTrainingSessions.sort(null);
 	}
 
 	@Override
@@ -145,7 +146,10 @@ public class User {
 	}
 	
 	
-	
+	public void createTrainingSession(String title, Sport sport, Date startDate, float distance, float duration){
+		TrainingSession trainingSession = new TrainingSession(title, sport, startDate, distance, duration);
+		addTrainingSession(trainingSession);
+	}
 	
 
 }

@@ -3,23 +3,23 @@ package es.deusto.sd.group6.strava.entity;
 import java.util.Date;
 import java.util.Objects;
 
-public class TrainingSession {
+import es.deusto.sd.group6.strava.dto.TrainingSessionDTO;
+
+public class TrainingSession implements Comparable<TrainingSession> {
 	
 	private String title;
 	private Sport sport;
-	private Date date;
-	private String startTime; //Igual se puede quitar y utilizar el tiempo de startDate
+	private Date startDate;
 	private float distance;
 	private float duration;
 	
 	public TrainingSession() {}
 	
-	public TrainingSession(String title, Sport sport, Date startDate, String startTime, float distance,
+	public TrainingSession(String title, Sport sport, Date startDate, float distance,
 			float duration) {
 		this.title = title;
 		this.sport = sport;
-		this.date = startDate;
-		this.startTime = startTime;
+		this.startDate = startDate;
 		this.distance = distance;
 		this.duration = duration;
 	}
@@ -41,19 +41,11 @@ public class TrainingSession {
 	}
 
 	public Date getStartDate() {
-		return date;
+		return startDate;
 	}
 
 	public void setStartDate(Date startDate) {
-		this.date = startDate;
-	}
-
-	public String getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
+		this.startDate = startDate;
 	}
 
 	public float getDistance() {
@@ -74,7 +66,7 @@ public class TrainingSession {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, sport, startTime, title);
+		return Objects.hash(startDate, sport, title);
 	}
 
 	@Override
@@ -86,10 +78,22 @@ public class TrainingSession {
 		if (getClass() != obj.getClass())
 			return false;
 		TrainingSession other = (TrainingSession) obj;
-		return Objects.equals(date, other.date) && sport == other.sport && Objects.equals(startTime, other.startTime)
-				&& Objects.equals(title, other.title);
+		return Objects.equals(startDate, other.startDate);
 	}
 	
-	
+	public TrainingSessionDTO toDTO() {
+		return new TrainingSessionDTO(this.getTitle(),this.getSport(),this.getStartDate(),this.getDistance(),this.getDuration());
+		/*
+		for(TrainingSession session:recentTrainignSessions) {
+			recentTrainignSessionsDTO.add(sessionDTO);
+		}
+		*/
+	}
+
+	@Override
+	public int compareTo(TrainingSession o) {
+		return this.startDate.compareTo(o.getStartDate());
+		
+	}
 
 }

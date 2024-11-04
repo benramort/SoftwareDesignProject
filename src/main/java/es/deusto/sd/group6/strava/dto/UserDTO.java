@@ -9,10 +9,10 @@ public class UserDTO {
 	private String name;
 	private String surname;
 	private Date birthdate;
-	private float weight=-1;
-	private float height=-1;
-	private float maxHeartRate=-1;
-	private float restHeartRate=-1;
+	private float weight;
+	private float height;
+	private float maxHeartRate;
+	private float restHeartRate;
 	
 	public UserDTO() {}
 	
