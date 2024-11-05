@@ -53,10 +53,9 @@ public class ChallengeController {
 		}
 	}
 
-	@PostMapping("/accept/{challengeName}")
-	public ResponseEntity<Void> acceptChallenge(@RequestParam("token") long token, @PathVariable String challengeName) {
+	@PostMapping("/{challengeName}")
+	public ResponseEntity<Void> acceptChallenge(@RequestParam("token") long token, @PathVariable("challengeName") String challengeName) {
 		try {
-			System.out.println(challengeName);
 			boolean isAccepted = challengeService.acceptChallenge(challengeName, token);
 			if (isAccepted) {
 				return new ResponseEntity<>(HttpStatus.OK);
