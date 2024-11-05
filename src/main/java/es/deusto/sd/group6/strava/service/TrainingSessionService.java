@@ -49,13 +49,15 @@ public class TrainingSessionService {
 
 			if(sessions.size() <= 5) {
 				recentSessions.addAll(sessions);
+				
 			}else{
-				for (int i=sessions.size()-1; i >= sessions.size() -5; i--) {
+				for (int i=0; i < 5; i++) {
 					recentSessions.add(sessions.get(i));
 				}
 			}
-			return lTrainingSession;
-
+			//return lTrainingSession; //ejemplo
+			return recentSessions;
+			
 		}else {
 			throw new RuntimeException("User not found");
 		}

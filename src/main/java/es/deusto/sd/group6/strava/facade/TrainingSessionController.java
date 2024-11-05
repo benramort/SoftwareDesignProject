@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,7 +68,7 @@ public class TrainingSessionController {
 	}
 
 	@GetMapping("/byDate")
-	public ResponseEntity<List<TrainingSessionDTO>> viewTrainingSessionsByDate(@RequestParam("token") long token, @RequestParam("startDate") Date startDate, @RequestParam("endDate") Date endDate) {
+	public ResponseEntity<List<TrainingSessionDTO>> viewTrainingSessionsByDate(@RequestParam("token") long token, @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate, @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
 		try {
 			List<TrainingSessionDTO> trainingSessionsByDateDTO = new ArrayList<TrainingSessionDTO>();
 			List<TrainingSession> trainingSessionsByDate = trainingSessionService.viewTrainingSessionsByDate(token, startDate, endDate);

@@ -83,17 +83,11 @@ public class TrainingSession implements Comparable<TrainingSession> {
 	
 	public TrainingSessionDTO toDTO() {
 		return new TrainingSessionDTO(this.getTitle(),this.getSport(),this.getStartDate(),this.getDistance(),this.getDuration());
-		/*
-		for(TrainingSession session:recentTrainignSessions) {
-			recentTrainignSessionsDTO.add(sessionDTO);
-		}
-		*/
 	}
 
 	@Override
 	public int compareTo(TrainingSession o) {
-		return this.startDate.compareTo(o.getStartDate());
-		
+		return o.startDate.compareTo(this.getStartDate());
 	}
 
 }
