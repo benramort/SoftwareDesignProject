@@ -43,15 +43,9 @@ public class TrainingSessionController {
 	@GetMapping("")
 	public ResponseEntity<List<TrainingSessionDTO>> viewRecentTrainingSessions(@RequestParam("token") long token){
 		try {
-			//List<TrainingSessionDTO> recentTrainignSessions = trainingSessionService.viewRecentTrainingSessions(token);
 			List<TrainingSessionDTO> recentTrainingSessionsDTO = new ArrayList<TrainingSessionDTO>();
 			List<TrainingSession> recentTrainingSessions = trainingSessionService.viewRecentTrainingSessions(token);
-			
-			/*
-			for(TrainingSession session:recentTrainignSessions) {
-				TrainingSessionDTO sessionDTO = new TrainingSessionDTO(session.getTitle(),session.getSport(),session.getStartDate(),session.getStartTime(),session.getDistance(),session.getDuration());
-				recentTrainignSessionsDTO.add(sessionDTO);
-			}*/
+
 			for(TrainingSession session:recentTrainingSessions) {
 				recentTrainingSessionsDTO.add(session.toDTO());	
 			}
