@@ -1,18 +1,18 @@
 package es.deusto.sd.group6.strava.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 
-import es.deusto.sd.group6.strava.entity.AcceptedChallenge;
 import es.deusto.sd.group6.strava.entity.Challenge;
 import es.deusto.sd.group6.strava.entity.Sport;
-import es.deusto.sd.group6.strava.entity.TrainingSession;
 import es.deusto.sd.group6.strava.entity.User;
 
 @Service
@@ -63,6 +63,14 @@ public class ChallengeService {
 	public boolean acceptChallenge(String challengeName, long token) {
 		User user = userService.getUser(token);
 		List<Challenge> activeChallenges = getActiveChallenges();
+		for (Challenge challenge : activeChallenges) {
+			if (challenge.getName().equalsIgnoreCase(challengeName)) {
+				user.addAcceptedChallenge(challenge);
+				return true;
+			}
+		}
+		return false;
+		/*
 		List<TrainingSession> trainingSessions = user.getTrainingSessions();
 		for (Challenge challenge : activeChallenges) {
 			if (challenge.getName().equalsIgnoreCase(challengeName)) {
@@ -78,11 +86,25 @@ public class ChallengeService {
 
 			} else {
 				return false;
-			}
-		}
-		return false;
+			}*/
 	}
+	public List<Challenge> getAcceptedChallenges(User user) {
+		List<Challenge> challenges = user.getAcceptedChallenges();
 
+		if (challenges == null) {
+			throw new RuntimeException("No challenges found");
+		}
 
+		return challenges;
+	}
+	public Map<Challenge, Float> getAcceptedChallengesProgress(User user) {
+		Map<Challenge, Float> challengeProgress = user.getAcceptedChallengesProgress();
+		if (challengeProgress == null) {
+			throw new RuntimeException("No challenges found");
+		}
 
+		return challengeProgress;
+	}
 }
+
+
