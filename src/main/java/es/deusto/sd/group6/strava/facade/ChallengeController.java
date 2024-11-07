@@ -81,7 +81,7 @@ public class ChallengeController {
 					@ApiResponse(responseCode = "200", description = "OK: List of accepted challenges retrieved successfully"),
 					@ApiResponse(responseCode = "204", description = "No Content: No challeges found"),
 					@ApiResponse(responseCode = "500", description = "Internal server error"),
-					@ApiResponse(responseCode = "401", description = "Unauthorized: User not authenticated")
+					@ApiResponse(responseCode = "403", description = "Unauthorized: User not authenticated")
 			}
 			)
 	@GetMapping("/accepted")
@@ -117,7 +117,7 @@ public class ChallengeController {
 			responses = {
 					@ApiResponse(responseCode = "200", description = "OK: List of accepted challenges progress retrieved successfully"),
 					@ApiResponse(responseCode = "204", description = "No Content: No challeges found"),
-					@ApiResponse(responseCode = "401", description = "Unauthorized: User not authenticated"),
+					@ApiResponse(responseCode = "403", description = "Unauthorized: User not authenticated"),
 					@ApiResponse(responseCode = "500", description = "Internal server error") })
 	@GetMapping("/progress")
 	public ResponseEntity<List<ProgressDTO>> getAcceptedChallengesProgress(
