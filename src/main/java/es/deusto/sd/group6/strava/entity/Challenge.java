@@ -107,7 +107,7 @@ public class Challenge {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(creator, endDate, goal, isDistance, name, sport, startDate);
+		return Objects.hash(id, creator, endDate, goal, isDistance, name, sport, startDate);
 	}
 
 	@Override
@@ -119,20 +119,17 @@ public class Challenge {
 		if (getClass() != obj.getClass())
 			return false;
 		Challenge other = (Challenge) obj;
-		return Objects.equals(creator, other.creator) && Objects.equals(endDate, other.endDate)
-				&& Float.floatToIntBits(goal) == Float.floatToIntBits(other.goal) && isDistance == other.isDistance
-				&& Objects.equals(name, other.name) && sport == other.sport
-				&& Objects.equals(startDate, other.startDate);
+		return id == other.id;
 	}
 	
 	public ChallengeDTO toDTO() 
 	{
-		ChallengeDTO challengeDTO = new ChallengeDTO(this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport());
+		ChallengeDTO challengeDTO = new ChallengeDTO(this.id, this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport());
 		return challengeDTO;
 	}
 	public ProgressDTO toProgressDTO(float progress) 
 	{
-		ProgressDTO progressDTO = new ProgressDTO(this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport(), progress);
+		ProgressDTO progressDTO = new ProgressDTO(this.id, this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport(), progress);
 		return progressDTO;
 	}
 	

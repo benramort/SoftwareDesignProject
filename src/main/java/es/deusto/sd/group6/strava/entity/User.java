@@ -10,6 +10,7 @@ import java.util.Objects;
 public class User {
 
 	private String email;
+	private AccountType accountType;
 	private String name;
 	private String surname;
 	private Date birthdate;
@@ -22,9 +23,10 @@ public class User {
 
 	public User() {}
 
-	public User(String email, String name, String surname, Date birthdate, float weight, float height,
+	public User(String email, AccountType accountType, String name, String surname, Date birthdate, float weight, float height,
 			float maxHeartRate, float restHeartRate) {
 		this.email = email;
+		this.accountType = accountType;
 		this.name = name;
 		this.surname = surname;
 		this.birthdate = birthdate;
@@ -36,8 +38,9 @@ public class User {
 		this.lTrainingSessions = new ArrayList<>();
 	}
 
-	public User(String email, String name, String surname, Date birthdate) {
+	public User(String email, AccountType accountType, String name, String surname, Date birthdate) {
 		this.email = email;
+		this.accountType = accountType;
 		this.name = name;
 		this.surname = surname;
 		this.birthdate = birthdate;
@@ -55,6 +58,14 @@ public class User {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public AccountType getAccountType() {
+		return accountType;
+	}
+	
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
 	}
 
 	public String getName() {

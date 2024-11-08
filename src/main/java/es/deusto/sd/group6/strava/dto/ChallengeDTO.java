@@ -7,6 +7,7 @@ import es.deusto.sd.group6.strava.entity.Sport;
 public class ChallengeDTO {
 	
 	private String name;
+	private long id;
     private Date startDate;
     private Date endDate;
     private boolean isDistance;
@@ -15,8 +16,9 @@ public class ChallengeDTO {
 	
 	public ChallengeDTO() {}	
 	
-	public ChallengeDTO(String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport) {
+	public ChallengeDTO(long id, String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;

@@ -5,6 +5,7 @@ import java.util.Date;
 import es.deusto.sd.group6.strava.entity.Sport;
 
 public class ProgressDTO {
+	private long id;
 	private String name;
 	private Date startDate;
 	private Date endDate;
@@ -15,8 +16,9 @@ public class ProgressDTO {
 
 	public ProgressDTO() {}
 
-	public ProgressDTO(String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport,
+	public ProgressDTO(long id, String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport,
 			float progress) {
+		this.id = id;
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;

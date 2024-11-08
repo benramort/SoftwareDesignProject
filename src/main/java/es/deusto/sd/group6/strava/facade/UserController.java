@@ -27,7 +27,7 @@ public class UserController {
 	@PostMapping("")
 	public ResponseEntity<Void> createUser(@RequestBody UserDTO user) {
 		try {
-			userService.createUser(user.getEmail(), user.getPassword(), user.getName(), user.getSurname(), user.getBirthdate(),
+			userService.createUser(user.getEmail(), user.getAccountType(), user.getPassword(), user.getName(), user.getSurname(), user.getBirthdate(),
 					user.getWeight(), user.getHeight(), user.getMaxHeartRate(), user.getRestHeartRate());
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (RuntimeException e) {
