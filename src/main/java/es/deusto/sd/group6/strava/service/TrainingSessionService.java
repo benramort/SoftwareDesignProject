@@ -32,6 +32,7 @@ public class TrainingSessionService {
 		}
 	}
 
+	@Deprecated
 	public void createTrainingSession(long token, String title, Sport sport, Date startDate, float distance, float duration) {
 		User user = userService.getUser(token);
 		if(user != null) {
@@ -39,6 +40,13 @@ public class TrainingSessionService {
 		}
 	}
 	
+	public void createTrainingSession(User user, String title, Sport sport, Date startDate, float distance, float duration) {
+		if(user != null) {
+			user.createTrainingSession(title, sport, startDate, distance, duration);
+		}
+	}
+	
+	@Deprecated
 	public List<TrainingSession> viewRecentTrainingSessions(long token){
 		User user = userService.getUser(token);
 		if(user != null) {
@@ -64,7 +72,26 @@ public class TrainingSessionService {
 
 	}
 	
+	public List<TrainingSession> viewRecentTrainingSessions(User user){
+		List<TrainingSession> sessions = user.getTrainingSessions();
+		
+		List<TrainingSession> recentSessions = new ArrayList<>();
+		
+
+		if(sessions.size() <= 5) {
+			recentSessions.addAll(sessions);
+			
+		}else{
+			for (int i=0; i < 5; i++) {
+				recentSessions.add(sessions.get(i));
+			}
+		}
+		//return lTrainingSession; //ejemplo
+		return recentSessions;
+
+	}
 	
+	@Deprecated
 	public List<TrainingSession> viewTrainingSessionsByDate(long token, Date startDate, Date endDate){
 		User user = userService.getUser(token);
 		if (user != null) {
@@ -83,6 +110,20 @@ public class TrainingSessionService {
 		}else {
 			throw new RuntimeException("User not found");
 		}
+	}
+	
+	public List<TrainingSession> viewTrainingSessionsByDate(User user, Date startDate, Date endDate){
+		List<TrainingSession> sessions = user.getTrainingSessions();	
+		List<TrainingSession> filteredSessions = new ArrayList<>();
+
+		for(TrainingSession session : sessions) {
+			Date sessionStartDate = session.getStartDate();
+
+			if(sessionStartDate.after(startDate) && sessionStartDate.before(endDate)) {
+				filteredSessions.add(session);
+			}
+		}
+		return filteredSessions;
 	}
 
 }
