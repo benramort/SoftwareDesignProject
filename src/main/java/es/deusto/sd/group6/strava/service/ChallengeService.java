@@ -45,7 +45,11 @@ public class ChallengeService {
 
 	public Challenge createChallenge(String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport, long token) {
 		User user = userService.getUser(token);
+		if (user == null) {
+			throw new RuntimeException("User not found");
+		}
 		Challenge challenge = new Challenge(idGenerator.incrementAndGet(), name, startDate, endDate, isDistance, goal, sport, user);
+		System.out.println("Creating challenge with id " + challenge.getId() + " and name " + challenge.getName());
 		challenges.put(challenge.getId(), challenge);
 		return challenge;
 	}

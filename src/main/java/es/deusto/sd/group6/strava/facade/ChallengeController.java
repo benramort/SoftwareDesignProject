@@ -43,7 +43,10 @@ public class ChallengeController {
 			challengeService.createChallenge(challenge.getName(), challenge.getStartDate(), challenge.getEndDate(), challenge.isDistance(), challenge.getGoal(), challenge.getSport(), token);
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch(RuntimeException e) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+			if (e.getMessage().equals("User not found")) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
