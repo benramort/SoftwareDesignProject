@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.Objects;
 
 import es.deusto.sd.group6.strava.dto.ChallengeDTO;
+import es.deusto.sd.group6.strava.dto.ProgressDTO;
 
 public class Challenge {
 	
+	private long id;
 	private String name;
 	private Date startDate;
 	private Date endDate;
@@ -17,7 +19,7 @@ public class Challenge {
 	
 	public Challenge() {}
 	
-	public Challenge(String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport, User creator) {
+	public Challenge(long id, String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport, User creator) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -25,6 +27,14 @@ public class Challenge {
 		this.goal = goal;
 		this.sport = sport;
 		this.creator = creator;
+	}
+	
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public long getId() {
+        return id;
 	}
 
 	public String getName() {
@@ -97,7 +107,7 @@ public class Challenge {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(creator, endDate, goal, isDistance, name, sport, startDate);
+		return Objects.hash(id, creator, endDate, goal, isDistance, name, sport, startDate);
 	}
 
 	@Override
@@ -109,10 +119,18 @@ public class Challenge {
 		if (getClass() != obj.getClass())
 			return false;
 		Challenge other = (Challenge) obj;
-		return Objects.equals(creator, other.creator) && Objects.equals(endDate, other.endDate)
-				&& Float.floatToIntBits(goal) == Float.floatToIntBits(other.goal) && isDistance == other.isDistance
-				&& Objects.equals(name, other.name) && sport == other.sport
-				&& Objects.equals(startDate, other.startDate);
+		return id == other.id;
+	}
+	
+	public ChallengeDTO toDTO() 
+	{
+		ChallengeDTO challengeDTO = new ChallengeDTO(this.id, this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport());
+		return challengeDTO;
+	}
+	public ProgressDTO toProgressDTO(float progress) 
+	{
+		ProgressDTO progressDTO = new ProgressDTO(this.id, this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport(), progress);
+		return progressDTO;
 	}
 	
 	public ChallengeDTO toDTO() 

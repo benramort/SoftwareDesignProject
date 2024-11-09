@@ -4,20 +4,20 @@ import java.util.Date;
 
 import es.deusto.sd.group6.strava.entity.Sport;
 
-public class ChallengeDTO {
-	
-	private String name;
+public class ProgressDTO {
 	private long id;
-    private Date startDate;
-    private Date endDate;
-    private boolean isDistance;
-    private Sport sport;
-    private float goal;
-	
-	public ChallengeDTO() {}	
-	
-	public ChallengeDTO(long id, String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport) {
-		super();
+	private String name;
+	private Date startDate;
+	private Date endDate;
+	private boolean isDistance;
+	private float goal;
+	private Sport sport;
+	private float progress;
+
+	public ProgressDTO() {}
+
+	public ProgressDTO(long id, String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport,
+			float progress) {
 		this.id = id;
 		this.name = name;
 		this.startDate = startDate;
@@ -25,6 +25,7 @@ public class ChallengeDTO {
 		this.isDistance = isDistance;
 		this.goal = goal;
 		this.sport = sport;
+		this.progress = progress;
 	}
 
 	public String getName() {
@@ -74,5 +75,12 @@ public class ChallengeDTO {
 	public void setSport(Sport sport) {
 		this.sport = sport;
 	}
-	
+
+	public float getProgress() {
+		return progress;
+	}
+
+	public void setProgress(float progress) {
+		this.progress = progress;
+	}
 }

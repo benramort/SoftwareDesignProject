@@ -2,23 +2,27 @@ package es.deusto.sd.group6.strava.dto;
 
 import java.util.Date;
 
+import es.deusto.sd.group6.strava.entity.AccountType;
+
 public class UserDTO {
 	
 	private String email;
+	private AccountType accountType;
 	private String password;
 	private String name;
 	private String surname;
 	private Date birthdate;
-	private float weight=-1;
-	private float height=-1;
-	private float maxHeartRate=-1;
-	private float restHeartRate=-1;
+	private float weight;
+	private float height;
+	private float maxHeartRate;
+	private float restHeartRate;
 	
 	public UserDTO() {}
 	
-	public UserDTO(String email, String password, String name, String surname, Date birthdate, float weight, float height,
+	public UserDTO(String email, AccountType accountType, String password, String name, String surname, Date birthdate, float weight, float height,
 			float maxHeartRate, float restHeartRate) {
 		this.email = email;
+		this.accountType = accountType;
 		this.password = password;
 		this.name = name;
 		this.surname = surname;
@@ -35,6 +39,14 @@ public class UserDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public AccountType getAccountType() {
+		return accountType;
+	}
+	
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
 	}
 	
 	public String getPassword() {
