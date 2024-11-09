@@ -29,16 +29,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @RequestMapping("/challenges")
 public class ChallengeController {
 	private ChallengeService challengeService;
-	private UserService userService;
 
 	public ChallengeController(ChallengeService challengeService, UserService userService) {
 		super();
 		this.challengeService = challengeService;
-		this.userService = userService;
 	}
 
+	@Operation(summary = "Create a challenge", 
+			description = "Create a new challenge", 
+			responses = {
+			@ApiResponse(responseCode = "201", description = "Created: Challenge created successfully"),
+			@ApiResponse(responseCode = "400", description = "Bad Request: Challenge creation failed"),
+			@ApiResponse(responseCode = "403", description = "Forbidden: User not found") })
 	@PostMapping("")
-	public ResponseEntity<Void> createChallenge(@RequestParam("token") long token, @RequestBody ChallengeDTO challenge){
+	public ResponseEntity<Void> createChallenge(
+			@Parameter(name = "token", description = "Authorization token", required = true, example = "1727786726773")
+			@RequestParam("token") long token, @RequestBody ChallengeDTO challenge){
 		try {
 			challengeService.createChallenge(challenge.getName(), challenge.getStartDate(), challenge.getEndDate(), challenge.isDistance(), challenge.getGoal(), challenge.getSport(), token);
 			return new ResponseEntity<>(HttpStatus.CREATED);
@@ -49,11 +55,20 @@ public class ChallengeController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-
+	
+	@Operation(summary = "Get all active challenges", 
+			description = "Get all challenges that are currently active", 
+			responses = {
+			@ApiResponse(responseCode = "200", description = "OK: List of active challenges retrieved successfully"),
+			@ApiResponse(responseCode = "409", description = "Conflict: Challenge already accepted"),
+			@ApiResponse(responseCode = "204", description = "No Content: No challeges found") })
 	@GetMapping("/active")
 	public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(){
 		try {
 			List<Challenge> activeChallenges = challengeService.getActiveChallenges();
+			if (activeChallenges.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
 			List<ChallengeDTO> activeChallengesDTO = new ArrayList<ChallengeDTO>();
 			for(Challenge activeChallenge: activeChallenges) {
 				activeChallengesDTO.add(activeChallenge.toDTO());
@@ -64,8 +79,17 @@ public class ChallengeController {
 		}
 	}
 
-	@PostMapping("/{challengeName}")
-	public ResponseEntity<Void> acceptChallenge(@RequestParam("token") long token, @PathVariable("challengeName") long challengeId) {
+	@Operation(summary = "Accept a challenge", 
+			description = "Accept a challenge by its id", responses = {
+			@ApiResponse(responseCode = "200", description = "OK: Challenge accepted successfully"),
+			@ApiResponse(responseCode = "409", description = "Conflict: Challenge already accepted"),
+			@ApiResponse(responseCode = "403", description = "Unauthorized: User not authenticated") })
+	@PostMapping("/{challengeId}")
+	public ResponseEntity<Void> acceptChallenge(
+			@Parameter(name = "token", description = "Authorization token", required = true, example = "1727786726773")
+			@RequestParam("token") long token, 
+			@Parameter(name = "challengeId", description = "ID of the challenge", required = true, example = "1")		
+			@PathVariable("challengeId") long challengeId) {
 		try {
 			boolean isAccepted = challengeService.acceptChallenge(challengeId, token);
 			if (isAccepted) {
@@ -74,9 +98,13 @@ public class ChallengeController {
 				return new ResponseEntity<>(HttpStatus.CONFLICT);
 			}
 		} catch (RuntimeException e) {
+			if (e.getMessage().equals("User not found")) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 	}
+	
 	@Operation(
 			summary = "Get all accepted challenges",
 			description = "Get all challenges that have been accepted by the user",
@@ -93,13 +121,7 @@ public class ChallengeController {
 			@RequestParam("token") long token) {
 
 		try {
-			User user = userService.getUser(token);
-
-			if (user == null) {
-				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-			}
-
-			List<Challenge> challenges = challengeService.getAcceptedChallenges(user);
+			List<Challenge> challenges = challengeService.getAcceptedChallenges(token);
 
 			if (challenges.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -110,6 +132,9 @@ public class ChallengeController {
 
 			return new ResponseEntity<>(dtos, HttpStatus.OK);
 		} catch (Exception e) {
+			if (e.getMessage().equals("User not found")) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -127,23 +152,19 @@ public class ChallengeController {
 			@Parameter(name = "token", description = "Authorization token", required = true, example = "1727786726773")
 			@RequestParam("token") long token){
 		try {
-			User user = userService.getUser(token);
-
-			if (user == null) {
-				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-			}
-
-			Map<Challenge, Float> acceptedChallenges = challengeService.getAcceptedChallengesProgress(user);
+			Map<Challenge, Float> acceptedChallenges = challengeService.getAcceptedChallengesProgress(token);
 
 			if (acceptedChallenges.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-
 			List<ProgressDTO> dtos = new ArrayList<>();
 			acceptedChallenges.forEach((challenge, progress) -> dtos.add(challenge.toProgressDTO(progress)));
 
 			return new ResponseEntity<>(dtos, HttpStatus.OK);
 		} catch (Exception e) {
+			if (e.getMessage().equals("User not found")) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

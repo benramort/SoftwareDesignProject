@@ -74,6 +74,9 @@ public class ChallengeService {
 
 	public boolean acceptChallenge(long id, long token) {
 		User user = userService.getUser(token);
+		if (user == null) {
+			throw new RuntimeException("User not found");
+		}
 		List<Challenge> activeChallenges = getActiveChallenges();
 		for (Challenge challenge : activeChallenges) {
 			if (challenge.getId() == id) {
@@ -112,20 +115,29 @@ public class ChallengeService {
 		return false;
 	}
 	
-	public List<Challenge> getAcceptedChallenges(User user) {
+	public List<Challenge> getAcceptedChallenges(long token) {
+		User user = userService.getUser(token);
+		if (user == null) {
+			throw new RuntimeException("User not found");
+		}
 		List<Challenge> challenges = user.getAcceptedChallenges();
-
+		
 		if (challenges == null) {
 			throw new RuntimeException("No challenges found");
 		}
 
 		return challenges;
 	}
-	public Map<Challenge, Float> getAcceptedChallengesProgress(User user) {
+	public Map<Challenge, Float> getAcceptedChallengesProgress(long token) {
+		User user = userService.getUser(token);
+		if (user == null) {
+			throw new RuntimeException("User not found");
+		}
 		Map<Challenge, Float> challengeProgress = user.getAcceptedChallengesProgress();
 		if (challengeProgress == null) {
 			throw new RuntimeException("No challenges found");
 		}
+		
 
 		return challengeProgress;
 	}
