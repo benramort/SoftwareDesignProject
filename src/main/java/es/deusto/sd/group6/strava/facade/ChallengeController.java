@@ -66,7 +66,11 @@ public class ChallengeController {
 			@ApiResponse(responseCode = "409", description = "Conflict: Challenge already accepted"),
 			@ApiResponse(responseCode = "204", description = "No Content: No challeges found") })
 	@GetMapping("/active")
-	public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(@RequestParam(value ="filterDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date filterDate, @RequestParam(value = "filterSport", required = false) Sport filterSport){
+	public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(
+			@Parameter(name = "filterDate", description = "Start date to filter the active challenges", required = false)
+			@RequestParam(value ="filterDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date filterDate, 
+			@Parameter(name = "filterDate", description = "Sport to filter the active challenges", required = false)
+			@RequestParam(value = "filterSport", required = false) Sport filterSport){
 		try {
 			List<Challenge> activeChallenges = challengeService.getActiveChallenges(filterDate, filterSport);
 			if (activeChallenges.isEmpty()) {
