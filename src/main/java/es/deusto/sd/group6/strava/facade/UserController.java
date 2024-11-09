@@ -80,7 +80,7 @@ public class UserController {
 	)
 	@PostMapping("/logout")
 	public ResponseEntity<Void> deleteUser(
-			@Parameter(name="Token", description="Session token", required=true, example="123456789")
+			@Parameter(name="token", description="Session token", required=true, example="123456789")
 			@RequestParam("token") long token
 			) {
 		try {

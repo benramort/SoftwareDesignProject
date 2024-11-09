@@ -26,10 +26,12 @@ import es.deusto.sd.group6.strava.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 
 @RestController
 @RequestMapping("/challenges")
+@Tag(name = "Challenge Controller", description = "Operations to create and manage challenges")
 public class ChallengeController {
 	private ChallengeService challengeService;
 

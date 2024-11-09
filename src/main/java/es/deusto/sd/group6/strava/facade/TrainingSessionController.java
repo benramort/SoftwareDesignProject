@@ -21,9 +21,11 @@ import es.deusto.sd.group6.strava.service.TrainingSessionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/trainingSessions")
+@Tag(name = "Training Session Controller", description = "Operations to create and manage training sessions")
 public class TrainingSessionController {
 
 	private TrainingSessionService trainingSessionService;
@@ -40,7 +42,7 @@ public class TrainingSessionController {
 			@ApiResponse(responseCode = "403", description = "User not found") 
 			})
 	public ResponseEntity<Void> createTrainingSession(
-			@Parameter(name = "Token", description = "User session token", required = true)
+			@Parameter(name = "token", description = "User session token", required = true)
 			@RequestParam("token") long token, 
 			@Parameter(name = "Training session data", description = "Data to create a new training session. Required: title, sport, startDate, distance and duration", required = true)
 			@RequestBody TrainingSessionDTO trainingSession
@@ -59,7 +61,7 @@ public class TrainingSessionController {
 			@ApiResponse(responseCode = "200", description = "List of recent training sessions"),
 			@ApiResponse(responseCode = "403", description = "User not found") })
 	public ResponseEntity<List<TrainingSessionDTO>> viewRecentTrainingSessions(
-			@Parameter(name = "Token", description = "User session token", required = true)
+			@Parameter(name = "token", description = "User session token", required = true)
 			@RequestParam("token") long token){
 		try {
 			List<TrainingSessionDTO> recentTrainingSessionsDTO = new ArrayList<TrainingSessionDTO>();
@@ -85,11 +87,11 @@ public class TrainingSessionController {
 			@ApiResponse(responseCode = "200", description = "List of training sessions between the dates"),
 			@ApiResponse(responseCode = "403", description = "User not found") })
 	public ResponseEntity<List<TrainingSessionDTO>> viewTrainingSessionsByDate(
-			@Parameter(name = "Token", description = "User session token", required = true)
+			@Parameter(name = "5oken", description = "User session token", required = true)
 			@RequestParam("token") long token,
-			@Parameter(name = "Start date", description = "Start date to filter the training sessions", required = true)
+			@Parameter(name = "startDate", description = "Start date to filter the training sessions", required = true)
 			@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-			@Parameter(name = "End date", description = "End date to filter the training sessions", required = true)
+			@Parameter(name = "endDate", description = "End date to filter the training sessions", required = true)
 			@RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
 		try {
 			List<TrainingSessionDTO> trainingSessionsByDateDTO = new ArrayList<TrainingSessionDTO>();
