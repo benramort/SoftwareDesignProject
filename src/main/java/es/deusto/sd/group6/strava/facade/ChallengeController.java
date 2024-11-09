@@ -29,12 +29,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @RequestMapping("/challenges")
 public class ChallengeController {
 	private ChallengeService challengeService;
-	private UserService userService;
 
 	public ChallengeController(ChallengeService challengeService, UserService userService) {
 		super();
 		this.challengeService = challengeService;
-		this.userService = userService;
 	}
 
 	@Operation(summary = "Create a challenge", 
@@ -123,13 +121,7 @@ public class ChallengeController {
 			@RequestParam("token") long token) {
 
 		try {
-			User user = userService.getUser(token);
-
-			if (user == null) {
-				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-			}
-
-			List<Challenge> challenges = challengeService.getAcceptedChallenges(user);
+			List<Challenge> challenges = challengeService.getAcceptedChallenges(token);
 
 			if (challenges.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -140,6 +132,9 @@ public class ChallengeController {
 
 			return new ResponseEntity<>(dtos, HttpStatus.OK);
 		} catch (Exception e) {
+			if (e.getMessage().equals("User not found")) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

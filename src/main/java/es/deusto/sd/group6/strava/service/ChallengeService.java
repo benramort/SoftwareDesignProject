@@ -115,9 +115,13 @@ public class ChallengeService {
 		return false;
 	}
 	
-	public List<Challenge> getAcceptedChallenges(User user) {
+	public List<Challenge> getAcceptedChallenges(long token) {
+		User user = userService.getUser(token);
+		if (user == null) {
+			throw new RuntimeException("User not found");
+		}
 		List<Challenge> challenges = user.getAcceptedChallenges();
-
+		
 		if (challenges == null) {
 			throw new RuntimeException("No challenges found");
 		}
