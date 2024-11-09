@@ -1,9 +1,11 @@
 package es.deusto.sd.group6.strava.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import es.deusto.sd.group6.strava.dto.ChallengeDTO;
 import es.deusto.sd.group6.strava.dto.ProgressDTO;
 import es.deusto.sd.group6.strava.entity.Challenge;
+import es.deusto.sd.group6.strava.entity.Sport;
 import es.deusto.sd.group6.strava.entity.User;
 import es.deusto.sd.group6.strava.service.ChallengeService;
 import es.deusto.sd.group6.strava.service.UserService;
@@ -51,9 +54,9 @@ public class ChallengeController {
 	}
 
 	@GetMapping("/active")
-	public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(){
+	public ResponseEntity<List<ChallengeDTO>> getActiveChallenges(@RequestParam(value ="filterDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date filterDate, @RequestParam(value = "filterSport", required = false) Sport filterSport){
 		try {
-			List<Challenge> activeChallenges = challengeService.getActiveChallenges();
+			List<Challenge> activeChallenges = challengeService.getActiveChallenges(filterDate, filterSport);
 			List<ChallengeDTO> activeChallengesDTO = new ArrayList<ChallengeDTO>();
 			for(Challenge activeChallenge: activeChallenges) {
 				activeChallengesDTO.add(activeChallenge.toDTO());
@@ -65,9 +68,9 @@ public class ChallengeController {
 	}
 
 	@PostMapping("/{challengeName}")
-	public ResponseEntity<Void> acceptChallenge(@RequestParam("token") long token, @PathVariable("challengeName") String challengeName) {
+	public ResponseEntity<Void> acceptChallenge(@RequestParam("token") long token, @PathVariable("challengeName") long challengeId) {
 		try {
-			boolean isAccepted = challengeService.acceptChallenge(challengeName, token);
+			boolean isAccepted = challengeService.acceptChallenge(challengeId, token);
 			if (isAccepted) {
 				return new ResponseEntity<>(HttpStatus.OK);
 			} else {

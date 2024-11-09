@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -60,11 +61,29 @@ public class ChallengeService {
 		return challenge;
 	}
 
-	public List<Challenge> getActiveChallenges() {
+	public List<Challenge> getActiveChallenges(Date filterDate, Sport filterSport) {
 		Date currentDate = new Date();
 		List<Challenge> activeChallenges = new ArrayList<>();
 		for(Challenge challenge : challenges.values()) {
 
+			if(challenge.getStartDate() != null && challenge.getEndDate() != null && challenge.getEndDate().after(currentDate) && challenge.getStartDate().before(currentDate)) {
+				
+				if ((filterDate == null || (challenge.getStartDate().before(filterDate) && challenge.getEndDate().after(filterDate)))
+						&& (filterSport == null ||filterSport == Sport.ANY || challenge.getSport().equals(filterSport))) {
+		            activeChallenges.add(challenge);
+		        }
+			}
+		}
+		if ((filterDate == null && filterSport == null) || (filterDate == null && filterSport == Sport.ANY)) {
+	        return activeChallenges.size() > 5 ? activeChallenges.subList(activeChallenges.size() - 6, activeChallenges.size() - 1) : activeChallenges;
+	    }
+
+		return activeChallenges;
+	}
+	public List<Challenge> getActiveChallenges() {
+		Date currentDate = new Date();
+		List<Challenge> activeChallenges = new ArrayList<>();
+		for(Challenge challenge : challenges.values()) {
 			if(challenge.getStartDate() != null && challenge.getEndDate() != null && challenge.getEndDate().after(currentDate) && challenge.getStartDate().before(currentDate)) {
 				activeChallenges.add(challenge);
 			}

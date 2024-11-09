@@ -134,12 +134,5 @@ public class Challenge {
 		return progressDTO;
 	}
 	
-	public ChallengeDTO toDTO() 
-	{
-		ChallengeDTO challengeDTO = new ChallengeDTO(this.getName(),this.getStartDate(),this.getEndDate(),this.isDistance(),this.getGoal(),this.getSport());
-		return challengeDTO;
-	}
-	
-	
 
 }
