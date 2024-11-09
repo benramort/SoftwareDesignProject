@@ -26,7 +26,6 @@ public class TrainingSessionService {
 			Date date1 = sdf.parse("01-01-2000");
 			TrainingSession trainingSession = new TrainingSession("ts1", Sport.CYCLING, date1, 0.7f, 11.2f);
 			lTrainingSession.add(trainingSession);
-			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -37,12 +36,16 @@ public class TrainingSessionService {
 		User user = userService.getUser(token);
 		if(user != null) {
 			user.createTrainingSession(title, sport, startDate, distance, duration);
+		} else {
+			throw new RuntimeException("User not found");
 		}
 	}
 	
 	public void createTrainingSession(User user, String title, Sport sport, Date startDate, float distance, float duration) {
 		if(user != null) {
 			user.createTrainingSession(title, sport, startDate, distance, duration);
+		} else {
+			throw new RuntimeException("User not found");
 		}
 	}
 	

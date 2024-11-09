@@ -18,6 +18,10 @@ import es.deusto.sd.group6.strava.dto.TrainingSessionDTO;
 import es.deusto.sd.group6.strava.entity.TrainingSession;
 import es.deusto.sd.group6.strava.service.TrainingSessionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @RestController
 @RequestMapping("/trainingSessions")
 public class TrainingSessionController {
@@ -28,20 +32,35 @@ public class TrainingSessionController {
 		super();
 		this.trainingSessionService = trainingSessionService;
 	}
-//TODO mandar json devuelve ok
+
 	@PostMapping("")
-	public ResponseEntity<Void> createTrainingSession(@RequestParam("token") long token, @RequestBody TrainingSessionDTO trainingSession){
+	@Operation(summary = "Create training session", description = "Create a new training session",
+			responses = {
+			@ApiResponse(responseCode = "201", description = "Training session created"),
+			@ApiResponse(responseCode = "403", description = "User not found") 
+			})
+	public ResponseEntity<Void> createTrainingSession(
+			@Parameter(name = "Token", description = "User session token", required = true)
+			@RequestParam("token") long token, 
+			@Parameter(name = "Training session data", description = "Data to create a new training session. Required: title, sport, startDate, distance and duration", required = true)
+			@RequestBody TrainingSessionDTO trainingSession
+            ) {
 		try {
 
 			trainingSessionService.createTrainingSession(token, trainingSession.getTitle(), trainingSession.getSport(), trainingSession.getStartDate(), trainingSession.getDistance(), trainingSession.getDuration());
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch (RuntimeException e) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 	}
 	
 	@GetMapping("")
-	public ResponseEntity<List<TrainingSessionDTO>> viewRecentTrainingSessions(@RequestParam("token") long token){
+	@Operation(summary = "View recent training sessions", description = "View the recent 5 most recent training sessions of an user", responses = {
+			@ApiResponse(responseCode = "200", description = "List of recent training sessions"),
+			@ApiResponse(responseCode = "403", description = "User not found") })
+	public ResponseEntity<List<TrainingSessionDTO>> viewRecentTrainingSessions(
+			@Parameter(name = "Token", description = "User session token", required = true)
+			@RequestParam("token") long token){
 		try {
 			List<TrainingSessionDTO> recentTrainingSessionsDTO = new ArrayList<TrainingSessionDTO>();
 			List<TrainingSession> recentTrainingSessions = trainingSessionService.viewRecentTrainingSessions(token);
@@ -62,7 +81,16 @@ public class TrainingSessionController {
 	}
 
 	@GetMapping("/byDate")
-	public ResponseEntity<List<TrainingSessionDTO>> viewTrainingSessionsByDate(@RequestParam("token") long token, @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate, @RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+	@Operation(summary = "View training sessions by date", description = "View the training sessions of an user between two dates", responses = {
+			@ApiResponse(responseCode = "200", description = "List of training sessions between the dates"),
+			@ApiResponse(responseCode = "403", description = "User not found") })
+	public ResponseEntity<List<TrainingSessionDTO>> viewTrainingSessionsByDate(
+			@Parameter(name = "Token", description = "User session token", required = true)
+			@RequestParam("token") long token,
+			@Parameter(name = "Start date", description = "Start date to filter the training sessions", required = true)
+			@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+			@Parameter(name = "End date", description = "End date to filter the training sessions", required = true)
+			@RequestParam("endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
 		try {
 			List<TrainingSessionDTO> trainingSessionsByDateDTO = new ArrayList<TrainingSessionDTO>();
 			List<TrainingSession> trainingSessionsByDate = trainingSessionService.viewTrainingSessionsByDate(token, startDate, endDate);
@@ -73,7 +101,7 @@ public class TrainingSessionController {
 
 			return new ResponseEntity<>(trainingSessionsByDateDTO,HttpStatus.OK);
 		}catch (RuntimeException e) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 	}
 }

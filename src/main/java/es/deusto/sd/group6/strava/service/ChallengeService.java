@@ -11,7 +11,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
-
 import es.deusto.sd.group6.strava.entity.Challenge;
 import es.deusto.sd.group6.strava.entity.Sport;
 import es.deusto.sd.group6.strava.entity.User;
