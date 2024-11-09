@@ -20,6 +20,7 @@ public class Challenge {
 	public Challenge() {}
 	
 	public Challenge(long id, String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport, User creator) {
+		this.id = id;
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
