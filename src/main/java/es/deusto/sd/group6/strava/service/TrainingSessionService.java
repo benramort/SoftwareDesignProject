@@ -31,7 +31,7 @@ public class TrainingSessionService {
 		}
 	}
 
-	@Deprecated
+	
 	public void createTrainingSession(long token, String title, Sport sport, Date startDate, float distance, float duration) {
 		User user = userService.getUser(token);
 		if(user != null) {
@@ -49,7 +49,7 @@ public class TrainingSessionService {
 		}
 	}
 	
-	@Deprecated
+	
 	public List<TrainingSession> viewRecentTrainingSessions(long token){
 		User user = userService.getUser(token);
 		if(user != null) {
@@ -94,7 +94,7 @@ public class TrainingSessionService {
 
 	}
 	
-	@Deprecated
+	
 	public List<TrainingSession> viewTrainingSessionsByDate(long token, Date startDate, Date endDate){
 		User user = userService.getUser(token);
 		if (user != null) {
