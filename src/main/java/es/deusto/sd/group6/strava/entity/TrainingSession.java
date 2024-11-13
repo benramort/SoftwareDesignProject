@@ -63,7 +63,9 @@ public class TrainingSession implements Comparable<TrainingSession> {
 	public void setDuration(float duration) {
 		this.duration = duration;
 	}
-
+	
+	
+	//TODO no por fecha, ordenar en el database
 	@Override
 	public int hashCode() {
 		return Objects.hash(startDate, sport, title);
