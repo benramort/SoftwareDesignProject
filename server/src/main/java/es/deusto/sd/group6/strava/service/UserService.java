@@ -32,7 +32,10 @@ public class UserService {
 	public void createUser(String email, AccountType type, String password, String name, String surname, Date birthdate, float weight, float height,
 			float maxHeartRate, float restHeartRate) {
 		
-		//Falta validar contraseña con google
+		ILoginServiceGateway loginService = new GoogleServiceGateway();
+		if (!loginService.validateUser(email, password)) {
+			return;
+		}
 		
 		User newUser = new User(email, type, name, surname, birthdate);
 		if (weight >= 0) {
@@ -51,6 +54,13 @@ public class UserService {
 	}
 	
 	public long logIn(String email, String password) { //Una persona puede logearse varias veces
+		
+		ILoginServiceGateway loginService = new GoogleServiceGateway();
+		if (!loginService.validateUser(email, password)) {
+			return 0;
+		}
+		
+		
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 		long token = System.currentTimeMillis();
 		activeUsers.put(token, user);
