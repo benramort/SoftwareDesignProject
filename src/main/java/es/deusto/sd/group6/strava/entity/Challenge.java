@@ -5,16 +5,43 @@ import java.util.Objects;
 
 import es.deusto.sd.group6.strava.dto.ChallengeDTO;
 import es.deusto.sd.group6.strava.dto.ProgressDTO;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
+@Entity
 public class Challenge {
 	
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
+	
+	@Column(nullable = false)
 	private String name;
+	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date startDate;
+	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date endDate;
+	
+	@Column(nullable = false)
 	private boolean isDistance;
+	
+	@Column(nullable = false)
 	private float goal;
+	
+	@Column(nullable = false)
 	private Sport sport;
+	
+	@ManyToOne
+    @JoinColumn(name = "user_email", nullable = false)
 	private User creator;
 	
 	public Challenge() {}

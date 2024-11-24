@@ -6,7 +6,7 @@ import es.deusto.sd.group6.strava.entity.Sport;
 
 public class TrainingSessionDTO {
 
-	
+	private long id;
 	private String title;
 	private Sport sport;
 	private Date startDate;
@@ -15,8 +15,9 @@ public class TrainingSessionDTO {
 	
 	public TrainingSessionDTO() {}
 	
-	public TrainingSessionDTO(String title, Sport sport, Date startDate, float distance,
+	public TrainingSessionDTO(long id,String title, Sport sport, Date startDate, float distance,
 			float duration) {
+		this.id = id;
 		this.title = title;
 		this.sport = sport;
 		this.startDate = startDate;
@@ -24,6 +25,14 @@ public class TrainingSessionDTO {
 		this.duration = duration;
 	}
 	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 	public String getTitle() {
 		return title;
 	}

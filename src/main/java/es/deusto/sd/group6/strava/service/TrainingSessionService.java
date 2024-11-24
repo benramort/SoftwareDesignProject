@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.group6.strava.dao.TrainingSessionRepository;
+import es.deusto.sd.group6.strava.dao.UserRepository;
 import es.deusto.sd.group6.strava.entity.Sport;
 import es.deusto.sd.group6.strava.entity.TrainingSession;
 import es.deusto.sd.group6.strava.entity.User;
@@ -16,34 +18,34 @@ import es.deusto.sd.group6.strava.entity.User;
 public class TrainingSessionService {
 	//private User user;
 	private UserService userService; //para token
-	private List<TrainingSession> lTrainingSession = new ArrayList<TrainingSession>(); //ejemplos
+	private TrainingSessionRepository trainingSessionRepository;
+	private UserRepository userRepository;
 	
-	public TrainingSessionService(UserService userService) {
+	public TrainingSessionService(UserService userService, TrainingSessionRepository trainingSessionRepository, UserRepository userRepository) {
 		this.userService = userService;
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		try {
-			Date date1 = sdf.parse("01-01-2000");
-			TrainingSession trainingSession = new TrainingSession("ts1", Sport.CYCLING, date1, 0.7f, 11.2f);
-			lTrainingSession.add(trainingSession);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		this.trainingSessionRepository = trainingSessionRepository;
+		this.userRepository = userRepository;
 	}
 
 	
-	public void createTrainingSession(long token, String title, Sport sport, Date startDate, float distance, float duration) {
+	public void createTrainingSession(long token,long id, String title, Sport sport, Date startDate, float distance, float duration) {
 		User user = userService.getUser(token);
 		if(user != null) {
-			user.createTrainingSession(title, sport, startDate, distance, duration);
+			TrainingSession trainingSession = new TrainingSession(id, title, sport, startDate, distance, duration);
+			trainingSessionRepository.save(trainingSession);
+			user.getTrainingSessions().add(trainingSession); 
+			userRepository.save(user);
 		} else {
 			throw new RuntimeException("User not found");
 		}
 	}
 	
-	public void createTrainingSession(User user, String title, Sport sport, Date startDate, float distance, float duration) {
+	public void createTrainingSession(User user,long id, String title, Sport sport, Date startDate, float distance, float duration) {
 		if(user != null) {
-			user.createTrainingSession(title, sport, startDate, distance, duration);
+			TrainingSession trainingSession = new TrainingSession(id, title, sport, startDate, distance, duration);
+			trainingSessionRepository.save(trainingSession);
+			user.getTrainingSessions().add(trainingSession); 
+			userRepository.save(user);
 		} else {
 			throw new RuntimeException("User not found");
 		}
@@ -52,81 +54,75 @@ public class TrainingSessionService {
 	
 	public List<TrainingSession> viewRecentTrainingSessions(long token){
 		User user = userService.getUser(token);
-		if(user != null) {
-			List<TrainingSession> sessions = user.getTrainingSessions();
-			
-			List<TrainingSession> recentSessions = new ArrayList<>();
-			
-
-			if(sessions.size() <= 5) {
-				recentSessions.addAll(sessions);
-				
-			}else{
-				for (int i=0; i < 5; i++) {
-					recentSessions.add(sessions.get(i));
-				}
-			}
-			//return lTrainingSession; //ejemplo
-			return recentSessions;
-			
-		}else {
-			throw new RuntimeException("User not found");
-		}
-
+	    if (user != null) {
+	        List<TrainingSession> allSessions = trainingSessionRepository.findAllByOrderByStartDateDesc();
+	        
+	        List<TrainingSession> userSessions = new ArrayList<>();
+	        for (TrainingSession session : allSessions) {
+	            if (user.getTrainingSessions().contains(session)) {
+	                userSessions.add(session);
+	            }
+	        }
+	        
+	        return userSessions.size() <= 5 ? userSessions : userSessions.subList(0, 5);
+	    } else {
+	        throw new RuntimeException("User not found");
+	    }
+		
 	}
 	
 	public List<TrainingSession> viewRecentTrainingSessions(User user){
-		List<TrainingSession> sessions = user.getTrainingSessions();
-		
-		List<TrainingSession> recentSessions = new ArrayList<>();
-		
-
-		if(sessions.size() <= 5) {
-			recentSessions.addAll(sessions);
-			
-		}else{
-			for (int i=0; i < 5; i++) {
-				recentSessions.add(sessions.get(i));
-			}
-		}
-		//return lTrainingSession; //ejemplo
-		return recentSessions;
+		List<TrainingSession> allSessions = trainingSessionRepository.findAllByOrderByStartDateDesc();
+        
+        List<TrainingSession> userSessions = new ArrayList<>();
+        for (TrainingSession session : allSessions) {
+            if (user.getTrainingSessions().contains(session)) {
+                userSessions.add(session);
+            }
+        }
+        
+        return userSessions.size() <= 5 ? userSessions : userSessions.subList(0, 5);
 
 	}
 	
 	
 	public List<TrainingSession> viewTrainingSessionsByDate(long token, Date startDate, Date endDate){
 		User user = userService.getUser(token);
-		if (user != null) {
-			List<TrainingSession> sessions = user.getTrainingSessions();	
-			List<TrainingSession> filteredSessions = new ArrayList<>();
+	    if (user != null) {
+	    	List<TrainingSession> allSessions = trainingSessionRepository.findAllByOrderByStartDateDesc();
 
-			for(TrainingSession session : sessions) {
-				Date sessionStartDate = session.getStartDate();
+	        List<TrainingSession> filteredSessions = new ArrayList<>();
+	        for (TrainingSession session : allSessions) {
+	            if (user.getTrainingSessions().contains(session)) {
+	                Date sessionStartDate = session.getStartDate();
+	                
+	                if (sessionStartDate.after(startDate) && sessionStartDate.before(endDate)) {
+	                    filteredSessions.add(session);
+	                }
+	            }
+	        }
 
-				if(sessionStartDate.after(startDate) && sessionStartDate.before(endDate)) {
-					filteredSessions.add(session);
-				}
-			}
-			return filteredSessions;
-			
-		}else {
-			throw new RuntimeException("User not found");
-		}
+	        return filteredSessions;
+	    } else {
+	        throw new RuntimeException("User not found");
+	    }
 	}
 	
 	public List<TrainingSession> viewTrainingSessionsByDate(User user, Date startDate, Date endDate){
-		List<TrainingSession> sessions = user.getTrainingSessions();	
-		List<TrainingSession> filteredSessions = new ArrayList<>();
+		List<TrainingSession> allSessions = trainingSessionRepository.findAllByOrderByStartDateDesc();
 
-		for(TrainingSession session : sessions) {
-			Date sessionStartDate = session.getStartDate();
+        List<TrainingSession> filteredSessions = new ArrayList<>();
+        for (TrainingSession session : allSessions) {
+            if (user.getTrainingSessions().contains(session)) {
+                Date sessionStartDate = session.getStartDate();
+                
+                if (sessionStartDate.after(startDate) && sessionStartDate.before(endDate)) {
+                    filteredSessions.add(session);
+                }
+            }
+        }
 
-			if(sessionStartDate.after(startDate) && sessionStartDate.before(endDate)) {
-				filteredSessions.add(session);
-			}
-		}
-		return filteredSessions;
+        return filteredSessions;
 	}
 
 }
