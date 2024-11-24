@@ -4,24 +4,54 @@ import java.util.Date;
 import java.util.Objects;
 
 import es.deusto.sd.group6.strava.dto.TrainingSessionDTO;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
-public class TrainingSession implements Comparable<TrainingSession> {
+@Entity
+public class TrainingSession {
 	
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+	
+	@Column(nullable = false)
 	private String title;
+	
+	@Column(nullable = false)
 	private Sport sport;
-	private Date startDate;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+    private Date startDate;
+	
+	@Column(nullable = false)
 	private float distance;
+	
+	@Column(nullable = false)
 	private float duration;
 	
 	public TrainingSession() {}
 	
-	public TrainingSession(String title, Sport sport, Date startDate, float distance,
+	public TrainingSession(long id, String title, Sport sport, Date startDate, float distance,
 			float duration) {
+		this.id = id;
 		this.title = title;
 		this.sport = sport;
 		this.startDate = startDate;
 		this.distance = distance;
 		this.duration = duration;
+	}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -65,10 +95,9 @@ public class TrainingSession implements Comparable<TrainingSession> {
 	}
 	
 	
-	//TODO no por fecha, ordenar en el database
 	@Override
 	public int hashCode() {
-		return Objects.hash(startDate, sport, title);
+		return Objects.hash(id,startDate, sport, title);
 	}
 
 	@Override
@@ -80,16 +109,11 @@ public class TrainingSession implements Comparable<TrainingSession> {
 		if (getClass() != obj.getClass())
 			return false;
 		TrainingSession other = (TrainingSession) obj;
-		return Objects.equals(startDate, other.startDate);
+		return Objects.equals(id, other.id);
 	}
 	
 	public TrainingSessionDTO toDTO() {
-		return new TrainingSessionDTO(this.getTitle(),this.getSport(),this.getStartDate(),this.getDistance(),this.getDuration());
-	}
-
-	@Override
-	public int compareTo(TrainingSession o) {
-		return o.startDate.compareTo(this.getStartDate());
+		return new TrainingSessionDTO(this.getId(), this.getTitle(),this.getSport(),this.getStartDate(),this.getDistance(),this.getDuration());
 	}
 
 }

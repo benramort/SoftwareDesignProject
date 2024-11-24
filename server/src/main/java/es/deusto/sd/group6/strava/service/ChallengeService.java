@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
+import es.deusto.sd.group6.strava.dao.ChallengeRepository;
+import es.deusto.sd.group6.strava.dao.UserRepository;
 import es.deusto.sd.group6.strava.entity.Challenge;
 import es.deusto.sd.group6.strava.entity.Sport;
 import es.deusto.sd.group6.strava.entity.User;
@@ -20,27 +22,14 @@ import es.deusto.sd.group6.strava.entity.User;
 public class ChallengeService {
 
 	private AtomicLong idGenerator = new AtomicLong(0);
-	
-	private Map<Long, Challenge> challenges = new HashMap<>();
+	private ChallengeRepository challengeRepository;
+	private UserRepository userRepository;
 	private UserService userService;
 
-	public ChallengeService(UserService userService) {
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+	public ChallengeService(UserService userService, ChallengeRepository challengeRepository, UserRepository userRepository) {
 		this.userService = userService;
-		try {
-			Date startDate1 = sdf.parse("01-05-2023");
-			Date endDate1 = sdf.parse("30-05-2023");
-			Challenge challenge1 = new Challenge(idGenerator.incrementAndGet(), "Spring Marathon", startDate1, endDate1, true, 42.195f, Sport.RUNNING, null);
-
-			Date startDate2 = sdf.parse("15-06-2023");
-			Date endDate2 = sdf.parse("15-07-2023");
-			Challenge challenge2 = new Challenge(idGenerator.incrementAndGet(), "Cycling Tour", startDate2, endDate2, true, 100.0f, Sport.CYCLING, null);
-
-			challenges.put(challenge1.getId(), challenge1);
-			challenges.put(challenge2.getId(), challenge2);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		this.challengeRepository = challengeRepository;
+		this.userRepository = userRepository;
 	}
 
 	public Challenge createChallenge(String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport, long token) {
@@ -49,37 +38,30 @@ public class ChallengeService {
 			throw new RuntimeException("User not found");
 		}
 		Challenge challenge = new Challenge(idGenerator.incrementAndGet(), name, startDate, endDate, isDistance, goal, sport, user);
-		System.out.println("Creating challenge with id " + challenge.getId() + " and name " + challenge.getName());
-		challenges.put(challenge.getId(), challenge);
+		challengeRepository.save(challenge);
 		return challenge;
 	}
 	
 	public Challenge createChallenge(String name, Date startDate, Date endDate, boolean isDistance, float goal, Sport sport, User user) {
 		Challenge challenge = new Challenge(idGenerator.incrementAndGet(), name, startDate, endDate, isDistance, goal, sport, user);
-		challenges.put(challenge.getId(), challenge);
+		challengeRepository.save(challenge);
 		return challenge;
 	}
 
 	public List<Challenge> getActiveChallenges(Date filterDate, Sport filterSport) {
 		Date currentDate = new Date();
-		List<Challenge> activeChallenges = new ArrayList<>();
-		for(Challenge challenge : challenges.values()) {
 
-			if(challenge.getStartDate() != null && challenge.getEndDate() != null && challenge.getEndDate().after(currentDate) && challenge.getStartDate().before(currentDate)) {
-				
-				if ((filterDate == null || (challenge.getStartDate().before(filterDate) && challenge.getEndDate().after(filterDate)))
-						&& (filterSport == null ||filterSport == Sport.ANY || challenge.getSport().equals(filterSport))) {
-		            activeChallenges.add(challenge);
-		        }
-			}
-		}
-		if ((filterDate == null && filterSport == null) || (filterDate == null && filterSport == Sport.ANY)) {
-	        return activeChallenges.size() > 5 ? activeChallenges.subList(activeChallenges.size() - 6, activeChallenges.size() - 1) : activeChallenges;
-	    }
-
-		return activeChallenges;
+        if (filterDate == null && (filterSport == null || filterSport == Sport.ANY)) {
+            return challengeRepository.findByStartDateBeforeAndEndDateAfter(currentDate, currentDate);
+        } else if (filterDate == null) {
+            return challengeRepository.findByStartDateBeforeAndEndDateAfterAndSport(currentDate, currentDate, filterSport);
+        } else if (filterSport == null || filterSport == Sport.ANY) {
+            return challengeRepository.findByStartDateBeforeAndEndDateAfter(filterDate, filterDate);
+        } else {
+            return challengeRepository.findByStartDateBeforeAndEndDateAfterAndSport(filterDate, filterDate, filterSport);
+        }
 	}
-	public List<Challenge> getActiveChallenges() {
+	/*public List<Challenge> getActiveChallenges() {
 		Date currentDate = new Date();
 		List<Challenge> activeChallenges = new ArrayList<>();
 		for(Challenge challenge : challenges.values()) {
@@ -89,32 +71,32 @@ public class ChallengeService {
 		}
 
 		return activeChallenges;
-	}
+	}*/
 
 	public boolean acceptChallenge(long id, long token) {
 		User user = userService.getUser(token);
-		if (user == null) {
-			throw new RuntimeException("User not found");
-		}
-		List<Challenge> activeChallenges = getActiveChallenges();
-		for (Challenge challenge : activeChallenges) {
-			if (challenge.getId() == id) {
-				user.addAcceptedChallenge(challenge);
-				return true;
-			}
-		}
-		return false;
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        Challenge challenge = challengeRepository.findById(id).orElse(null);
+        if (challenge != null && challenge.getStartDate().before(new Date()) && challenge.getEndDate().after(new Date())) {
+            user.addAcceptedChallenge(challenge);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
 	}
 	
 	public boolean acceptChallenge(long id, User user) {
-		List<Challenge> activeChallenges = getActiveChallenges();
-		for (Challenge challenge : activeChallenges) {
-			if ((challenge.getId() == id)) {
-				user.addAcceptedChallenge(challenge);
-				return true;
-			}
-		}
-		return false;
+
+        Challenge challenge = challengeRepository.findById(id).orElse(null);
+        if (challenge != null && challenge.getStartDate().before(new Date()) && challenge.getEndDate().after(new Date())) {
+            user.addAcceptedChallenge(challenge);
+            userRepository.save(user);
+            return true;
+        }
+        return false;
 	}
 	
 	public List<Challenge> getAcceptedChallenges(long token) {

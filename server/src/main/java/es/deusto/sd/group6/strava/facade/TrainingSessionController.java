@@ -49,7 +49,7 @@ public class TrainingSessionController {
             ) {
 		try {
 
-			trainingSessionService.createTrainingSession(token, trainingSession.getTitle(), trainingSession.getSport(), trainingSession.getStartDate(), trainingSession.getDistance(), trainingSession.getDuration());
+			trainingSessionService.createTrainingSession(token, trainingSession.getId(),trainingSession.getTitle(), trainingSession.getSport(), trainingSession.getStartDate(), trainingSession.getDistance(), trainingSession.getDuration());
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch (RuntimeException e) {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -87,7 +87,7 @@ public class TrainingSessionController {
 			@ApiResponse(responseCode = "200", description = "List of training sessions between the dates"),
 			@ApiResponse(responseCode = "403", description = "User not found") })
 	public ResponseEntity<List<TrainingSessionDTO>> viewTrainingSessionsByDate(
-			@Parameter(name = "5oken", description = "User session token", required = true)
+			@Parameter(name = "token", description = "User session token", required = true)
 			@RequestParam("token") long token,
 			@Parameter(name = "startDate", description = "Start date to filter the training sessions", required = true)
 			@RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,

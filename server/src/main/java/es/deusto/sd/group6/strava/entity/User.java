@@ -7,18 +7,62 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class User {
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.JoinColumn;
 
+@Entity
+@Table(name = "users")
+public class User {
+	
+	@Id
+	@Column(nullable = false, unique = true)
 	private String email;
+	
+	@Column(nullable = false)
 	private AccountType accountType;
+	
+	@Column(nullable = false)
 	private String name;
+	
+	@Column(nullable = false)
 	private String surname;
+	
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date birthdate;
+	
+	@Column(nullable = false)
 	private float weight;
+	
+	@Column(nullable = false)
 	private float height;
+	
+	@Column(nullable = false)
 	private float maxHeartRate;
+	
+	@Column(nullable = false)
 	private float restHeartRate;
+	
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "challenge_user",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "challenge_id")
+    )
 	private List<Challenge> acceptedChallenges;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<TrainingSession> lTrainingSessions;
 
 	public User() {}
@@ -159,8 +203,8 @@ public class User {
 	}
 
 
-	public void createTrainingSession(String title, Sport sport, Date startDate, float distance, float duration){
-		TrainingSession trainingSession = new TrainingSession(title, sport, startDate, distance, duration);
+	public void createTrainingSession(long id, String title, Sport sport, Date startDate, float distance, float duration){
+		TrainingSession trainingSession = new TrainingSession(id,title, sport, startDate, distance, duration);
 		addTrainingSession(trainingSession);
 	}
 	public List<Challenge> getActiveChallenges(){
