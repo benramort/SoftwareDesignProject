@@ -57,7 +57,7 @@ public class UserService {
 		
 		ILoginServiceGateway loginService = new GoogleServiceGateway();
 		if (!loginService.validateUser(email, password)) {
-			return 0;
+			throw new RuntimeException("Invalid credentials");
 		}
 		
 		

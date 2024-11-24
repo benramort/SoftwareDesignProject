@@ -67,7 +67,13 @@ public class UserController {
 			long token = userService.logIn(loginData.getEmail(), loginData.getPassword());
 			return new ResponseEntity<>(token, HttpStatus.OK);
 		} catch (RuntimeException e) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			if (e.getMessage().equals("Invalid credentials")) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
+			if (e.getMessage().equals("User not found")) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	

@@ -45,13 +45,11 @@ public class GoogleServiceGateway implements ILoginServiceGateway{
         	if (response.statusCode() == 200) {
                 String responseBody = response.body();
                 boolean isValid = Boolean.parseBoolean(responseBody); // Modify based on response format
-
-                // Return the result wrapped in Optional
                 return isValid;
             } else if(response.statusCode() == 404){
             	throw new RuntimeException("User not found");
             } else {
-            	throw new RuntimeException("Unespected error");
+            	throw new RuntimeException("Unexpected error");
             }
         	
         } catch (Exception ex) {
