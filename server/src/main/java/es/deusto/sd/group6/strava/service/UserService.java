@@ -16,6 +16,7 @@ import es.deusto.sd.group6.strava.dao.UserRepository;
 import es.deusto.sd.group6.strava.entity.AccountType;
 import es.deusto.sd.group6.strava.entity.User;
 import es.deusto.sd.group6.strava.external.ILoginServiceGateway;
+import es.deusto.sd.group6.strava.external.GatewayFactory;
 import es.deusto.sd.group6.strava.external.GoogleServiceGateway;
 
 @Service
@@ -32,7 +33,7 @@ public class UserService {
 	public void createUser(String email, AccountType type, String password, String name, String surname, Date birthdate, float weight, float height,
 			float maxHeartRate, float restHeartRate) {
 		
-		ILoginServiceGateway loginService = new GoogleServiceGateway();
+		ILoginServiceGateway loginService = GatewayFactory.getInstance().getGateway(type);
 		if (!loginService.validateUser(email, password)) {
 			return;
 		}
@@ -55,13 +56,12 @@ public class UserService {
 	
 	public long logIn(String email, String password) { //Una persona puede logearse varias veces
 		
-		ILoginServiceGateway loginService = new GoogleServiceGateway();
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+		ILoginServiceGateway loginService = GatewayFactory.getInstance().getGateway(user.getAccountType());
 		if (!loginService.validateUser(email, password)) {
 			throw new RuntimeException("Invalid credentials");
 		}
 		
-		
-		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 		long token = System.currentTimeMillis();
 		activeUsers.put(token, user);
 		return token;

@@ -13,7 +13,7 @@ public class UserStorage {
 		users = new HashMap<>();
 	}
 
-	public void addUser(String username, String password) {
+	public synchronized void addUser(String username, String password) { //Esto tiene que ser syncronized?
 		users.put(username, password);
 	}
 

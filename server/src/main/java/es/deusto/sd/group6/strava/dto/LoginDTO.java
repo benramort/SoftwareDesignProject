@@ -5,7 +5,6 @@ import es.deusto.sd.group6.strava.entity.AccountType;
 public class LoginDTO {
 	
 	private String email;
-	private AccountType accountType;
 	private String password;
 
 	public LoginDTO() {
@@ -22,14 +21,6 @@ public class LoginDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	
-	public AccountType getAccountType() {
-		return accountType;
-	}
-	
-	public void setAccountType(AccountType accountType) {
-		this.accountType = accountType;
 	}
 
 	public String getPassword() {
