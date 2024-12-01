@@ -31,7 +31,7 @@ run {
     if (project.hasProperty('arg1')) {
         args project.property('arg1')
     } else {
-        args '9500'
+        args '8082'
     }
 }
 

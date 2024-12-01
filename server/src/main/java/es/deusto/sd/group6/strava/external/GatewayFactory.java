@@ -9,7 +9,7 @@ public class GatewayFactory {
 	public ILoginServiceGateway getGateway(AccountType accountType) {
         switch (accountType) {
         case FACEBOOK:
-        	return null;
+        	return new FacebookServiceGateway();
         case GOOGLE:
         	return new GoogleServiceGateway();
         default:

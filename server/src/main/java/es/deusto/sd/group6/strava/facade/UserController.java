@@ -33,7 +33,9 @@ public class UserController {
 			description = "Create a new user",
 			responses= {
                 @ApiResponse(responseCode = "201", description = "User created"),
-                @ApiResponse(responseCode = "409", description = "Email already in use")
+                @ApiResponse(responseCode = "409", description = "Email already in use"),
+                @ApiResponse(responseCode = "403", description = "Password not correct"),
+                @ApiResponse(responseCode = "500", description = "Internal server error")
             }
 	)
 	public ResponseEntity<Void> createUser(
@@ -45,7 +47,13 @@ public class UserController {
 					user.getWeight(), user.getHeight(), user.getMaxHeartRate(), user.getRestHeartRate());
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (RuntimeException e) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+			if (e.getMessage().equals("User already exists")) {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			} else if (e.getMessage().equals("Invalid credentials")) {
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			} else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		}
 	}
 	
