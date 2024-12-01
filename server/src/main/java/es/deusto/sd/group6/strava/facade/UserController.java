@@ -66,7 +66,7 @@ public class UserController {
 					@ApiResponse(responseCode = "404", description = "User not found for the given email")
 			}
 	)
-	public ResponseEntity<Long> createUser(
+	public ResponseEntity<Long> logIn(
 			@Parameter(name="Login data", description="Email and password to log in", required=true)
 			@RequestBody LoginDTO loginData) {
 		try {
