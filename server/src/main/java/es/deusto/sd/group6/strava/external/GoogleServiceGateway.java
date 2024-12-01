@@ -1,35 +1,40 @@
 package es.deusto.sd.group6.strava.external;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.List;
-import java.util.Optional;
+import java.util.Properties;
 
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import es.deusto.sd.group6.strava.entity.User;
 
 @Component
 public class GoogleServiceGateway implements ILoginServiceGateway{
 	
-	private final String API_URL = "http://localhost:8081";
-	
+	private String serverIP;
+	private int serverPort;
 	private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
 
     public GoogleServiceGateway() {
         this.httpClient = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream("config/googleService.properties")) {
+        	properties.load(fis);
+        	serverIP = properties.getProperty("serverIP");
+        	serverPort = Integer.parseInt(properties.getProperty("serverPort"));
+		} catch (IOException e) {
+			System.err.println("Error reading Google Service config file. Using default values");
+			serverIP = "127.0.0.1";
+			serverPort = 8081;
+		}
     }
     
     @Override
     public boolean validateUser(String email, String password) {
     	
-        String url = API_URL + "/validation?email=" + email + "&password=" + password; //poner desde json
+        String url = serverIP + ":"+serverPort + "/validation?email=" + email + "&password=" + password; //poner desde json
 
         try {
             // Create the request

@@ -3,12 +3,14 @@ package es.deusto.sd.group6.strava.external;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 import es.deusto.sd.group6.strava.entity.AccountType;
@@ -18,11 +20,21 @@ public class FacebookServiceGateway implements ILoginServiceGateway{
 	
 	private String serverIP;
 	private int serverPort;
-	private static String DELIMITER = ":";
+	private static String DELIMITER;
 	
 	public FacebookServiceGateway () {
-		serverIP = "127.0.0.1";
-		serverPort = 8082;
+		Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream("config/facebookService.properties")) {
+        	properties.load(fis);
+        	serverIP = properties.getProperty("serverIP");
+        	serverPort = Integer.parseInt(properties.getProperty("serverPort"));
+        	DELIMITER = properties.getProperty("delimiter");
+		} catch (IOException e) {
+			System.err.println("Error reading Google Service config file. Using default values");
+			serverIP = "127.0.0.1";
+			serverPort = 8081;
+			DELIMITER = ":";
+		}
 	}
 	@Override
     public boolean validateUser(String email, String password) {
