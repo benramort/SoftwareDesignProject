@@ -34,8 +34,9 @@ public class UserService {
 			float maxHeartRate, float restHeartRate) {
 		
 		ILoginServiceGateway loginService = GatewayFactory.getInstance().getGateway(type);
+		System.out.println("type" + type);
 		if (!loginService.validateUser(email, password)) {
-			return;
+			throw new RuntimeException("Invalid credentials");
 		}
 		
 		User newUser = new User(email, type, name, surname, birthdate);
@@ -51,6 +52,7 @@ public class UserService {
 		if (restHeartRate >= 0) {
 			newUser.setRestHeartRate(restHeartRate);
 		}
+		userRepository.findByEmail(email).ifPresent(u -> {throw new RuntimeException("User already exists");});
 		userRepository.save(newUser);
 	}
 	

@@ -57,39 +57,4 @@ public class GoogleServiceGateway implements ILoginServiceGateway{
             return false;
         }
     }
-    	
-   
-
-	@Override
-	public Optional<List<User>> getUsers() {
-
-		String url = API_URL + "/user";
-		
-        try {
-            // Create the request
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .GET()
-                    .build();
-
-            // Send the request and obtain the response
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        	
-        	// If response is OK, parse the response body
-        	if (response.statusCode() == 200) {
-                
-        		List<User> users = objectMapper.readValue(
-                        response.body(), 
-                        objectMapper.getTypeFactory().constructCollectionType(List.class, User.class)
-                );
-
-				return Optional.of(users);			
-			} else {
-				return Optional.empty();
-			}
-        } catch (Exception ex) {
-        	return Optional.empty();
-        }
-	}
-
 }

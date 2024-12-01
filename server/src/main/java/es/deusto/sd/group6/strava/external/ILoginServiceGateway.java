@@ -6,6 +6,4 @@ import es.deusto.sd.group6.strava.entity.User;
 
 public interface ILoginServiceGateway {
 	public boolean validateUser(String email, String password);
-	public Optional<List<User>> getUsers();
-
 }
