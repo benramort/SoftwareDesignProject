@@ -1,11 +1,6 @@
 package es.deusto.sd.group6.strava.service;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;

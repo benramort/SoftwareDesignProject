@@ -1,14 +1,8 @@
 package es.deusto.sd.group6.strava.service;
 
 import java.util.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
 
 import org.springframework.stereotype.Service;
 
@@ -17,7 +11,6 @@ import es.deusto.sd.group6.strava.entity.AccountType;
 import es.deusto.sd.group6.strava.entity.User;
 import es.deusto.sd.group6.strava.external.ILoginServiceGateway;
 import es.deusto.sd.group6.strava.external.GatewayFactory;
-import es.deusto.sd.group6.strava.external.GoogleServiceGateway;
 
 @Service
 public class UserService {

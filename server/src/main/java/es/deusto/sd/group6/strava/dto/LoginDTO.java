@@ -1,7 +1,5 @@
 package es.deusto.sd.group6.strava.dto;
 
-import es.deusto.sd.group6.strava.entity.AccountType;
-
 public class LoginDTO {
 	
 	private String email;

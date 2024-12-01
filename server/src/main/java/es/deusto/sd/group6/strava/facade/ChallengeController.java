@@ -20,7 +20,6 @@ import es.deusto.sd.group6.strava.dto.ChallengeDTO;
 import es.deusto.sd.group6.strava.dto.ProgressDTO;
 import es.deusto.sd.group6.strava.entity.Challenge;
 import es.deusto.sd.group6.strava.entity.Sport;
-import es.deusto.sd.group6.strava.entity.User;
 import es.deusto.sd.group6.strava.service.ChallengeService;
 import es.deusto.sd.group6.strava.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
