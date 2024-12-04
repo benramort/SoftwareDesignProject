@@ -6,7 +6,7 @@ public class GatewayFactory {
 
 	private static GatewayFactory instance = new GatewayFactory();
 	
-	public ILoginServiceGateway getGateway(AccountType accountType) {
+	public ILoginServiceGateway createGateway(AccountType accountType) {
         switch (accountType) {
         case FACEBOOK:
         	return new FacebookServiceGateway();

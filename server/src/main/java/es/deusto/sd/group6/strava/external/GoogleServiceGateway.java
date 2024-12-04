@@ -8,9 +8,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Properties;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class GoogleServiceGateway implements ILoginServiceGateway{
 	
 	private String serverIP;

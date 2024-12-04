@@ -52,7 +52,7 @@ public class User {
 	@Column(nullable = false)
 	private float restHeartRate;
 	
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(
         name = "challenge_user",
         joinColumns = @JoinColumn(name = "user_id"),

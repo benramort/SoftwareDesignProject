@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import es.deusto.sd.group6.strava.dao.UserRepository;
 import es.deusto.sd.group6.strava.entity.AccountType;
 import es.deusto.sd.group6.strava.entity.User;
-import es.deusto.sd.group6.strava.external.ILoginServiceGateway;
 import es.deusto.sd.group6.strava.external.GatewayFactory;
 
 @Service
@@ -26,9 +25,8 @@ public class UserService {
 	public void createUser(String email, AccountType type, String password, String name, String surname, Date birthdate, float weight, float height,
 			float maxHeartRate, float restHeartRate) {
 		
-		ILoginServiceGateway loginService = GatewayFactory.getInstance().getGateway(type);
 		System.out.println("type" + type);
-		if (!loginService.validateUser(email, password)) {
+		if (!GatewayFactory.getInstance().createGateway(type).validateUser(email, password)) {
 			throw new RuntimeException("Invalid credentials");
 		}
 		
@@ -52,8 +50,7 @@ public class UserService {
 	public long logIn(String email, String password) { //Una persona puede logearse varias veces
 		
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-		ILoginServiceGateway loginService = GatewayFactory.getInstance().getGateway(user.getAccountType());
-		if (!loginService.validateUser(email, password)) {
+		if (!GatewayFactory.getInstance().createGateway(user.getAccountType()).validateUser(email, password)) {
 			throw new RuntimeException("Invalid credentials");
 		}
 		
