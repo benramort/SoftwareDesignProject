@@ -10,8 +10,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import es.deusto.sd.group6.client.data.AccountType;
 import es.deusto.sd.group6.client.data.Challenge;
 import es.deusto.sd.group6.client.data.Sport;
+import es.deusto.sd.group6.client.data.User;
 
 @Controller
 public class ClientController {
@@ -21,6 +23,11 @@ public class ClientController {
 	
 	@GetMapping("/")
 	public String home(Model model) {
+		stravaService.createUser(new User("user1", AccountType.FACEBOOK, "password1", "name1", "surname1", new Date(), -1, -1, -1f, -1f));
+		System.out.println("Hola");
+		Long token = stravaService.login("user1", "password1");
+		System.out.println(token);
+		stravaService.logout(token);
 		return "index";
 	}
 	

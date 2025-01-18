@@ -5,9 +5,13 @@ import java.util.List;
 
 import es.deusto.sd.group6.client.data.Challenge;
 import es.deusto.sd.group6.client.data.Sport;
+import es.deusto.sd.group6.client.data.User;
 
 public interface IStravaServiceProxy {
 	
+	public void createUser(User user);
+	public Long login(String email, String password);
+	public void logout(long token);
 	List<Challenge> getActiveChallenges(Sport filterSport, Date filterDate);
 
 }
