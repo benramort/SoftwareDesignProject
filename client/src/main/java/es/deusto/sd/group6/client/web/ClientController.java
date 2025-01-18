@@ -9,6 +9,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import es.deusto.sd.group6.client.data.AccountType;
 import es.deusto.sd.group6.client.data.Challenge;
 import es.deusto.sd.group6.client.data.Sport;
@@ -39,13 +40,40 @@ public class ClientController {
 	
 	@GetMapping("/")
 	public String home(Model model) {
-		stravaService.createUser(new User("user1", AccountType.FACEBOOK, "password1", "name1", "surname1", new Date(), -1, -1, -1f, -1f));
-		System.out.println("Hola");
-		Long token = stravaService.login("user1", "password1");
-		System.out.println(token);
-		stravaService.logout(token);
+//		stravaService.createUser(new User("user1", AccountType.FACEBOOK, "password1", "name1", "surname1", new Date(), -1, -1, -1f, -1f));
+//		System.out.println("Hola");
+//		Long token = stravaService.login("user1", "password1");
+//		System.out.println(token);
+//		stravaService.logout(token);
 		return "index";
 	}
+	
+	@GetMapping("/login")
+	public String showLoginPage(Model model) {
+		return "login";
+	}
+	
+	@PostMapping("/login")
+	public String login(
+			@RequestParam(value = "email") String email,
+			@RequestParam(value = "password") String password, 
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		try {
+			stravaService.login(email, password);
+			return "redirect:/";
+		} catch (RuntimeException e) {
+			if (e.getMessage().equals("Invalid credentials")) {
+				redirectAttributes.addFlashAttribute("errorMessage", "The password is incorrect");
+			} else if (e.getMessage().equals("User not found")) {
+				redirectAttributes.addFlashAttribute("errorMessage", "The user does not exist");
+			} else {
+				redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
+			}
+		}
+		return "redirect:/login";
+	}
+		
 	
 	@GetMapping("/challenges")
 	public String getActiveChallenges(

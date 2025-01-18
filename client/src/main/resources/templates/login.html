@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Challenges</title>
+    <title>Log in</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -92,65 +92,33 @@
     <!-- Navbar End -->
 
 
-    <!-- Header Start -->
-    <div class="jumbotron jumbotron-fluid page-header">
-        <div class="container text-center py-5">
-            <h1 class="text-white display-3 mt-lg-5">CHALLENGES</h1>
-        </div>
-    </div>
-    <!-- Header End -->
-
-
     <!-- Services Start -->
     <div class="container-fluid py-5">
         <div class="container py-5">
-
-
-			<div class="d-flex justify-content-end align-items-center mb-4">
-			    <form th:action="@{/challenges}" method="get" class="d-flex align-items-center me-3">
-			        <label for="filterSport" class="form-label mb-0 me-2">Sport:</label>
-			        <select name="filterSport" id="filterSport" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
-			            <option value="ANY" th:selected="${filterSport == 'ANY'}">Any</option>
-			            <option value="RUNNING" th:selected="${filterSport == 'RUNNING'}">Running</option>
-			            <option value="CYCLING" th:selected="${filterSport == 'CYCLING'}">Cycling</option>
-			        </select>
-			    </form>
-				<form th:action="@{/challenges}" method="get" class="d-flex align-items-center">
-					<label for="date" class="form-label mb-0 me-2">Date:</label>
-					<input type="date" name="filterDate" id="date" class="inputdate form-control form-control-sm w-auto" onchange="this.form.submit()">
-				</form>
-			</div>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <h1 class="section-title position-relative text-center mb-5">Log in</h1>
+                </div>
             </div>
-
-
-
-            <div class="row mt-4" th:each="challenge : ${challenges}">
-                <div class="col-12">
-                    <div class="owl-carousel service-carousel">
-                        <div class="service-item">
-
-                            <div class="position-relative text-left bg-light rounded p-4 pb-5">
-                                <h5 th:text="${challenge.name}" class="font-weight-semi-bold mb-3 text-center">NAME</h5>
-                                <div class="row align-items-center" style="height: auto;">
-                                    <div class="col-md-4 d-flex flex-column justify-content-center">
-                                        <p><strong>Start Date: </strong><span th:text="${#dates.format(challenge.startDate, 'yyyy-MM-dd')}"></span></p>
-                                        <p><strong>End Date: </strong><span th:text="${#dates.format(challenge.endDate, 'yyyy-MM-dd')}"></span></p>
-                                    </div>
-                                    <div class="col-md-4 d-flex flex-column justify-content-center">
-                                        <p><strong>Sport: </strong><span th:text="${challenge.sport}"></span></p>
-                                        <p><strong>Goal: </strong><span th:text="${challenge.goal}"></span><span th:text="${challenge.isDistance ? ' km' : ' h'}"></span></p>
-                                    </div>
-                                    <div class="col-md-4 d-flex flex-column justify-content-center">
-                                        <button class="btn btn-primary mt-3 joinbutton">JOIN</button>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="contact-form bg-light rounded p-5">
+                        <div th:if="${errorMessage}">
+							<p class="errorMessage"><span th:text=${errorMessage}></span></p>
+						</div>
+                        <form th:action="@{/login}" method="post" name="sentMessage" id="contactForm" novalidate="novalidate">
+                            <div class="control-group">
+                                <input type="text" class="form-control p-4" name="email" id="email" placeholder="Email" required="required" data-validation-required-message="Please enter an email" />
+                                <p class="help-block text-danger"></p>
                             </div>
-                            
-                        </div>
+							<div class="control-group">
+							    <input type="password" class="form-control p-4" name="password" id="password" placeholder="Password" required="required" data-validation-required-message="Please enter a password" />
+							   	<p class="help-block text-danger"></p>
+							</div>
+                            <div>
+                                <button class="btn btn-primary btn-block py-3 px-5" type="submit" id="sendMessageButton">Log in</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
