@@ -6,6 +6,7 @@ import java.util.List;
 import es.deusto.sd.group6.client.data.Challenge;
 import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.User;
+import es.deusto.sd.group6.client.data.TrainingSession;
 
 public interface IStravaServiceProxy {
 	
@@ -13,5 +14,6 @@ public interface IStravaServiceProxy {
 	public Long login(String email, String password);
 	public void logout(long token);
 	List<Challenge> getActiveChallenges(Sport filterSport, Date filterDate);
+	void createTrainingSession(TrainingSession trainingSession, String token);
 
 }
