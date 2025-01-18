@@ -24,7 +24,6 @@ public class ServiceProxy implements IStravaServiceProxy {
 		this.restTemplate = restTemplate;
 	}
 	
-    @SuppressWarnings("unchecked")
     @Override
     public List<Challenge> getActiveChallenges(Sport filterSport, Date filterDate) {
         StringBuilder url = new StringBuilder(apiBaseUrl + "/challenges/active?");
@@ -48,5 +47,21 @@ public class ServiceProxy implements IStravaServiceProxy {
                 default -> throw new RuntimeException("Failed to retrieve challenges: " + e.getStatusText());
             }
         }
+    }
+    
+    @Override
+    public void joinChallenge(long id, String token){
+    	String url = apiBaseUrl + "/challenges/" + id + "?token=" +  token;
+    	try {
+            restTemplate.postForObject(url, null, Void.class);
+        } catch (HttpStatusCodeException e) {
+            switch (e.getStatusCode().value()) {
+                case 403 -> throw new RuntimeException("User not authenticated");
+                case 409 -> throw new RuntimeException("Challenge already accepted");
+                case 200 -> { /* Successful */ }
+                default -> throw new RuntimeException("Failed with status code: " + e.getStatusCode());
+            }
+        }
+
     }
 }

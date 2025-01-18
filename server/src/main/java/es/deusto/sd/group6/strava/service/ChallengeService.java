@@ -75,7 +75,7 @@ public class ChallengeService {
         }
 
         Challenge challenge = challengeRepository.findById(id).orElse(null);
-        if (challenge != null && challenge.getStartDate().before(new Date()) && challenge.getEndDate().after(new Date())) {
+        if (challenge != null && challenge.getStartDate().before(new Date()) && challenge.getEndDate().after(new Date())&& !user.getAcceptedChallenges().contains(challenge)) {
             user.addAcceptedChallenge(challenge);
             userRepository.save(user);
             return true;

@@ -9,5 +9,6 @@ import es.deusto.sd.group6.client.data.Sport;
 public interface IStravaServiceProxy {
 	
 	List<Challenge> getActiveChallenges(Sport filterSport, Date filterDate);
+	void joinChallenge(long id, String token);
 
 }

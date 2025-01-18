@@ -107,7 +107,7 @@
 
 
 			<div class="d-flex justify-content-end align-items-center mb-4">
-			    <form th:action="@{/challenges}" method="get" class="d-flex align-items-center me-3">
+			    <form th:action="@{/activeChallenges}" method="get" class="d-flex align-items-center me-3">
 			        <label for="filterSport" class="form-label mb-0 me-2">Sport:</label>
 			        <select name="filterSport" id="filterSport" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
 			            <option value="ANY" th:selected="${filterSport == 'ANY'}">Any</option>
@@ -115,7 +115,7 @@
 			            <option value="CYCLING" th:selected="${filterSport == 'CYCLING'}">Cycling</option>
 			        </select>
 			    </form>
-				<form th:action="@{/challenges}" method="get" class="d-flex align-items-center">
+				<form th:action="@{/activeChallenges}" method="get" class="d-flex align-items-center">
 					<label for="date" class="form-label mb-0 me-2">Date:</label>
 					<input type="date" name="filterDate" id="date" class="inputdate form-control form-control-sm w-auto" onchange="this.form.submit()">
 				</form>
@@ -142,8 +142,14 @@
                                         <p><strong>Sport: </strong><span th:text="${challenge.sport}"></span></p>
                                         <p><strong>Goal: </strong><span th:text="${challenge.goal}"></span><span th:text="${challenge.isDistance ? ' km' : ' h'}"></span></p>
                                     </div>
-                                    <div class="col-md-4 d-flex flex-column justify-content-center">
-                                        <button class="btn btn-primary mt-3 joinbutton">JOIN</button>
+                                    <div th:if="${token != null && challenge != null}" class="col-md-4 d-flex flex-column justify-content-center">
+										<form th:action="@{/challenge(redirectUrl=${currentUrl})}" method="post" class="p-4" style="display: flex; flex-direction: column;">
+											<input type="hidden" th:name="id" th:value="${challenge.id}" />
+                                        	<button class="btn btn-primary mt-3 joinbutton">JOIN</button>
+										</form>										
+										<p th:if="${errorMessageId == challenge.id}" th:text="${errorMessage}" class="text-danger mt-4"></p>
+										<p th:if="${successMessageId == challenge.id}" th:text="${successMessage}" class="text-success mt-4"></p>
+										<p th:if="${token == null}" class="text-danger">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to place a bid.</p>
                                     </div>
                                 </div>
                                 <div class="text-center">
@@ -171,13 +177,11 @@
                     <a class="btn btn-outline-secondary btn-social mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
                     <a class="btn btn-outline-secondary btn-social" href="#"><i class="fab fa-instagram"></i></a>
                 </div>
-                <div class="col-12 mt-2 mb-4">
-                        <div class="col-sm-6 text-center text-sm-center mb-3 mb-sm-0">
-                            <h5 class="font-weight-bold mb-2">Get In Touch</h5>
-                            <p class="mb-2">123 Street, New York, USA</p>
+                        <div class="col-12 mb-4 text-center text-sm-center">
+                            <h5 style="color: white;" class="font-weight-bold mb-2">Get In Touch</h5>
+                            <p class="mb-2">Deusto</p>
                             <p class="mb-0">+012 345 67890</p>
                         </div>
-                </div>
             </div>
         </div>
     </div>
