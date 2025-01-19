@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import es.deusto.sd.group6.client.data.AccountType;
 import es.deusto.sd.group6.client.data.Challenge;
+import es.deusto.sd.group6.client.data.ChallengeProgress;
 import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.User;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,11 +43,15 @@ public class ClientController {
 	
 	@GetMapping("/")
 	public String home(Model model) {
-//		stravaService.createUser(new User("user1", AccountType.FACEBOOK, "password1", "name1", "surname1", new Date(), -1, -1, -1f, -1f));
-//		System.out.println("Hola");
-//		Long token = stravaService.login("user1", "password1");
-//		System.out.println(token);
-//		stravaService.logout(token);
+	    List<ChallengeProgress> challenges;
+
+	    try {
+	        challenges = stravaService.getAcceptedChallengesProgress(token);
+	        model.addAttribute("challenges", challenges);
+	        
+	    } catch (RuntimeException e) {
+	        model.addAttribute("errorMessage", "Failed to load challenges: " + e.getMessage());
+	    }
 		return "index";
 	}
 	
@@ -171,11 +176,8 @@ public class ClientController {
             	isDistanceBoolean = false;
             }
             Challenge challenge = new Challenge(null, name, startDateParsed, endDateParsed, isDistanceBoolean, goal, sport);
-            System.out.println("v1:" + challenge);
             stravaService.createChallenge(token, challenge);
-            System.out.println("v2:" + challenge);
             model.addAttribute("message", "Challenge created successfully!");
-            System.out.println("v3:" + challenge);
         } catch (Exception e) {
         	e.printStackTrace();
             model.addAttribute("error", "An error occurred: " + e.getMessage());

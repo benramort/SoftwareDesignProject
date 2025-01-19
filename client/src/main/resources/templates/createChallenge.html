@@ -1,104 +1,214 @@
 <!DOCTYPE html>
-
-<html xmlns:th="http://www.thymeleaf.org">
-
 <html lang="en">
 
 <head>
+    <meta charset="utf-8">
+    <title>Create challenge</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
 
-    <meta charset="UTF-8">
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <title>Create Challenge</title>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link th:href="@{/style.min.css}" rel="stylesheet">
+    <link href="../static/style.min.css" rel="stylesheet">
 
 </head>
 
 <body>
-
-    <h1>Create Challenge</h1>
-
-    <form th:action="@{/challenges}" method="post">
-
-        <!-- Nombre del desafío -->
-
-        <label for="name">Challenge Name:</label>
-
-        <input type="text" id="name" name="name" th:value="*{name}" required>
-
-        <br><br>
-
-
-
-        <!-- Fecha de inicio -->
-
-        <label for="startDate">Start Date:</label>
-
-        <input type="date" id="startDate" name="startDate" th:value="*{startDate}" required>
-
-        <br><br>
-
-
-
-        <!-- Fecha de fin -->
-
-        <label for="endDate">End Date:</label>
-
-        <input type="date" id="endDate" name="endDate" th:value="*{endDate}" required>
-
-        <br><br>
-
-
-
-        <!-- ¿Es un desafío de distancia? -->
-
-        <label for="isDistance">Is Distance:</label>
-
-		<select id="isDistance" name="isDistance" th:value="*{isDistance}" required>
-
-		            <option value="KM">KM</option>
-
-		            <option value="HOURS">HOURS</option>
-
-		        </select>
-
-        <br><br>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-primary py-3 d-none d-md-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
+					<div th:if="${token}" class="d-inline-flex align-items-center">
+					    <a class="text-white pr-3" th:href="@{/logout(token=${token})}">Log out</a>
+					</div>
+					<div th:unless="${token}" class="d-inline-flex align-items-center">
+					    <a class="text-white pr-3" th:href="@{/login(redirectUrl=${currentUrl})}">Log in</a>
+					</div>
+                </div>
+                <div class="col-md-6 text-center text-lg-right">
+                    <div class="d-inline-flex align-items-center">
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a class="text-white pl-3" href="">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
 
 
+	<!-- Navbar Start -->
+	<div class="container-fluid position-relative nav-bar p-0">
+	    <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
+	        <nav class="navbar navbar-expand-lg bg-white navbar-light shadow p-lg-0">
+	            <a th:href="@{/}" class="navbar-brand d-block d-lg-none">
+	                <h1 class="m-0 display-4 text-primary">CREAM</h1>
+	            </a>
+	            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+	                <span class="navbar-toggler-icon"></span>
+	            </button>
+	            <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+	                <div class="navbar-nav ml-auto py-0">
+	                    <a th:href="@{/activeChallenges}" class="nav-item nav-link">Challenges</a>
+	                    <a th:href="@{/challenges}" class="nav-item nav-link">Create Challenge</a>
+	                </div>
+					<div>
+						
+						<a th:href="@{/}" class="navbar-brand mx-5 d-none d-lg-block" style="display: flex; align-items: center; justify-content: center;">
+						    <img style="width: 15rem;" class="m-0" src="https://i0.wp.com/www.interhacktives.com/wp-content/uploads/2014/02/strava.png?fit=595%2C337&ssl=1" alt="Strava Logo">
+						</a>
+					</div>
+	                <div class="navbar-nav mr-auto py-0">
+	                    <a th:href="@{/trainingSessions}" class="nav-item nav-link">Training Sessions</a>
+	                    <a th:href="@{/trainingSession}" class="nav-item nav-link">Create T. S.</a>
+	                </div>
+	            </div>
+	        </nav>
+	    </div>
+	</div>
+	<!-- Navbar End -->
 
-        <!-- Meta del desafío -->
+	<!-- Header Start -->
+	<div class="jumbotron jumbotron-fluid page-header">
+	    <div class="container text-center py-5">
+	        <h1 class="text-white display-3 mt-lg-5">CREATE CHALLENGE</h1>
+	    </div>
+	</div>
+	<!-- Header End -->
 
-        <label for="goal">Goal (distance/time):</label>
+    <!-- Services Start -->
+    <div class="container-fluid py-5">
+		<p th:if="${token == null}" class="errorMessage fs-5">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to create a training session</p>
+        <div th:if="${token != null}" class="container py-5">
+			<div class = "text-center"> 				
+				<p class="mb-4">Fill in the details below to create a new challenge.</p>
+			</div>			
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="contact-form bg-light rounded p-5">
+						<form th:action="@{/challenges}" method="post">
 
-        <input type="number" id="goal" name="goal" th:value="*{goal}" step="0.01" required>
+						        <!-- Nombre del desafío -->
 
-        <br><br>
+						        <label for="name" class="form-label">Challenge Name:</label>
 
-
-
-        <!-- Deporte -->
-
-        <label for="sport">Sport:</label>
-
-        <select id="sport" name="sport" th:value="*{sport}" required>
-
-            <option value="RUNNING">Running</option>
-
-            <option value="CYCLING">Cycling</option>
-
-            <option value="ANY">Any</option>
-
-        </select>
-
-        <br><br>
+						        <input type="text" class="form-control" id="name" name="name" th:value="*{name}" required>
 
 
+						        <!-- Fecha de inicio -->
 
-        <!-- Botón para enviar -->
+						        <label for="startDate" class="form-label">Start Date:</label>
 
-        <button type="submit">Create</button>
+						        <input type="date" class="form-control" id="startDate" name="startDate" th:value="*{startDate}" required>
 
-    </form>
+						        <!-- Fecha de fin -->
+
+						        <label for="endDate" class="form-label">End Date:</label>
+
+						        <input type="date" class="form-control" id="endDate" name="endDate" th:value="*{endDate}" required>
+
+						        <!-- ¿Es un desafío de distancia? -->
+
+						        <label for="isDistance" class="form-label">Is Distance:</label>
+
+								<select id="isDistance" class = "form-control" name="isDistance" th:value="*{isDistance}" required>
+
+								            <option value="KM">KM</option>
+
+								            <option value="HOURS">HOURS</option>
+
+								        </select>
+
+						        <!-- Meta del desafío -->
+
+						        <label for="goal" class="form-label">Goal (distance/time):</label>
+
+						        <input type="number" class="form-control" id="goal" name="goal" th:value="*{goal}" step="0.01" required>
+
+						        <!-- Deporte -->
+
+						        <label for="sport" class="form-label">Sport:</label>
+
+						        <select id="sport" class = "form-control" name="sport" th:value="*{sport}" required>
+
+						            <option value="RUNNING">Running</option>
+
+						            <option value="CYCLING">Cycling</option>
+
+						            <option value="ANY">Any</option>
+
+						        </select>
+
+						        <!-- Botón para enviar -->
+
+						        <button type="submit" class="btn btn-primary w-100 mt-4"><i class="fas fa-save me-2"></i> Save Challenge</button>
+
+						    </form>
+
+						<!-- Error Message -->
+						<p th:if="${errorMessage}" th:text="${errorMessage}" class="text-danger mt-4"></p>
+						<p th:if="${successMessage}" th:text="${successMessage}" class="text-success mt-4"></p>
+						
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Services End -->
+
+    <!-- Footer Start -->
+	<div class="container-fluid footer bg-orange" style="color : white;">
+	    <div class="container text-center py-5">
+	        <div class="row">
+	            <div class="col-12 mb-4">
+	            <img width= "20%" style="margin: 0;" class="m-0 display-4 text-primary" src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-white-cfde2bcc58a56430af3519272109b1c6a8f089d7bdc85b311bfaae63dd448751.svg" alt="" >
+	            </div>
+	            <div class="col-12 mb-4">
+	                <a class="btn btn-outline-secondary btn-social mr-2" href="#"><i class="fab fa-twitter"></i></a>
+	                <a class="btn btn-outline-secondary btn-social mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+	                <a class="btn btn-outline-secondary btn-social mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+	                <a class="btn btn-outline-secondary btn-social" href="#"><i class="fab fa-instagram"></i></a>
+	            </div>
+	                    <div class="col-12 mb-4 text-center text-sm-center">
+	                        <h5 style="color: white;" class="font-weight-bold mb-2">Get In Touch</h5>
+	                        <p class="mb-2">Deusto</p>
+	                        <p class="mb-0">+012 345 67890</p>
+	                    </div>
+	        </div>
+	    </div>
+	</div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-secondary px-2 back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
 
 </body>
 
