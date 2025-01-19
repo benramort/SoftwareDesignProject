@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import es.deusto.sd.group6.client.data.Challenge;
 
-import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.TrainingSession;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -145,6 +143,44 @@ public class ClientController {
 		
 		return "redirect:/";
 	}
+	
+	@GetMapping("/challenges")
+	public String showChallengesForm(Model model) {
+		return "createChallenge";
+	}
+	
+	@PostMapping("/challenges") 
+    public String createChallenge(
+            @RequestParam("name") String name,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("isDistance") String isDistance,
+            @RequestParam("goal") float goal,
+            @RequestParam("sport") Sport sport,
+            Model model) {
+        try {
+        	System.out.println(isDistance);
+        	boolean isDistanceBoolean;
+        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDateParsed = formatter.parse(startDate);
+            Date endDateParsed = formatter.parse(endDate);
+            if(isDistance.equals("KM")) {
+            	isDistanceBoolean = true;
+            }else {
+            	isDistanceBoolean = false;
+            }
+            Challenge challenge = new Challenge(null, name, startDateParsed, endDateParsed, isDistanceBoolean, goal, sport);
+            System.out.println("v1:" + challenge);
+            stravaService.createChallenge(token, challenge);
+            System.out.println("v2:" + challenge);
+            model.addAttribute("message", "Challenge created successfully!");
+            System.out.println("v3:" + challenge);
+        } catch (Exception e) {
+        	e.printStackTrace();
+            model.addAttribute("error", "An error occurred: " + e.getMessage());
+        }
+        return "createChallenge";
+    }
 		
 	
 	@GetMapping("/activeChallenges")

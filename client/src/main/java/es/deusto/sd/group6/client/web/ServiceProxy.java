@@ -165,5 +165,21 @@ public class ServiceProxy implements IStravaServiceProxy {
 			}
 		}
 	}
+
+	@Override
+    public void createChallenge(long token, Challenge challenge) {
+        String url = apiBaseUrl + "/challenges?token=" + token;
+        try {
+            restTemplate.postForObject(url, challenge, Void.class);
+            System.out.println(challenge.isDistance());
+        } catch (HttpStatusCodeException e) {
+            switch (e.getStatusCode().value()) {
+
+                case 403 -> throw new RuntimeException("User not found");
+
+                default -> throw new RuntimeException("Create challenge failed with status code: " + e.getStatusCode());
+            }
+        }
+    }
 }
 

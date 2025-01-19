@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Challenge</title>
+
+</head>
+
+<body>
+
+    <h1>Create Challenge</h1>
+
+    <form th:action="@{/challenges}" method="post">
+
+        <!-- Nombre del desafío -->
+
+        <label for="name">Challenge Name:</label>
+
+        <input type="text" id="name" name="name" th:value="*{name}" required>
+
+        <br><br>
+
+
+
+        <!-- Fecha de inicio -->
+
+        <label for="startDate">Start Date:</label>
+
+        <input type="date" id="startDate" name="startDate" th:value="*{startDate}" required>
+
+        <br><br>
+
+
+
+        <!-- Fecha de fin -->
+
+        <label for="endDate">End Date:</label>
+
+        <input type="date" id="endDate" name="endDate" th:value="*{endDate}" required>
+
+        <br><br>
+
+
+
+        <!-- ¿Es un desafío de distancia? -->
+
+        <label for="isDistance">Is Distance:</label>
+
+		<select id="isDistance" name="isDistance" th:value="*{isDistance}" required>
+
+		            <option value="KM">KM</option>
+
+		            <option value="HOURS">HOURS</option>
+
+		        </select>
+
+        <br><br>
+
+
+
+        <!-- Meta del desafío -->
+
+        <label for="goal">Goal (distance/time):</label>
+
+        <input type="number" id="goal" name="goal" th:value="*{goal}" step="0.01" required>
+
+        <br><br>
+
+
+
+        <!-- Deporte -->
+
+        <label for="sport">Sport:</label>
+
+        <select id="sport" name="sport" th:value="*{sport}" required>
+
+            <option value="RUNNING">Running</option>
+
+            <option value="CYCLING">Cycling</option>
+
+            <option value="ANY">Any</option>
+
+        </select>
+
+        <br><br>
+
+
+
+        <!-- Botón para enviar -->
+
+        <button type="submit">Create</button>
+
+    </form>
+
+</body>
+
+</html>
