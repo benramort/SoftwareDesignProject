@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import es.deusto.sd.group6.client.data.Challenge;
+import es.deusto.sd.group6.client.data.ChallengeProgress;
 import es.deusto.sd.group6.client.data.LoginDTO;
 import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.User;
@@ -165,5 +166,24 @@ public class ServiceProxy implements IStravaServiceProxy {
 			}
 		}
 	}
+	
+	@Override
+	public List<ChallengeProgress> getAcceptedChallengesProgress(long token){
+		String url = apiBaseUrl + "/challenges/progress?token=" + token;
+        try {
+        	return restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<ChallengeProgress>>() {}
+                ).getBody();
+        } catch (HttpStatusCodeException e) {
+            switch (e.getStatusCode().value()) {
+                case 404 -> throw new RuntimeException("No challenges found.");
+                default -> throw new RuntimeException("Failed to retrieve challenges: " + e.getStatusText());
+            }
+        }
+	}
+
 }
 
