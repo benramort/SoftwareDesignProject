@@ -30,13 +30,16 @@ public class ClientController {
 	@Autowired
 	IStravaServiceProxy stravaService;
 
-	private String token = "1737302834970";
-
+	private Long token = null; 
+	
 	@ModelAttribute
 	public void addAttributes(Model model, HttpServletRequest request) {
+
 		String currentUrl = ServletUriComponentsBuilder.fromRequestUri(request).toUriString();
-		model.addAttribute("currentUrl", currentUrl);
-		model.addAttribute("token", token);
+		model.addAttribute("currentUrl", currentUrl); // Makes current URL available in all templates.
+		if (token != null) {
+			model.addAttribute("token", token);
+		}
 	}
 	
 	@GetMapping("/")
@@ -50,19 +53,73 @@ public class ClientController {
 	}
 	
 	@GetMapping("/login")
-	public String showLoginPage(Model model) {
+	public String showLoginPage(
+			@RequestParam(value = "redirectUrl") String redirectUrl,
+			Model model) {
+		model.addAttribute("redirectUrl", redirectUrl);
 		return "login";
+	}
+	
+	@GetMapping("/register")
+	public String showRegisterPage(
+			@RequestParam(value = "redirectUrl") String redirectUrl,
+			Model model) {
+		model.addAttribute("redirectUrl", redirectUrl);
+		return "register";
+	}
+	
+	@PostMapping("/register")
+	public String register(@RequestParam(value = "email") String email,
+			@RequestParam(value = "password") String password,
+			@RequestParam(value = "name") String name,
+			@RequestParam(value = "surname") String surname,
+			@RequestParam(value = "accountType") String accountType,
+			@RequestParam(value = "birthdate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthdate,
+			@RequestParam(value = "weight", required = false) Integer weight,
+			@RequestParam(value = "height", required = false) Integer height,
+			@RequestParam(value = "maxHeartRate", required = false) Float maxHeartRate,
+			@RequestParam(value = "restHeartRate", required = false) Float restHeartRate,
+			@RequestParam(value = "redirectUrl") String redirectUrl,
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		try {
+			model.addAttribute("redirectUrl", redirectUrl);
+			if (accountType.equals("google")) {
+				stravaService.createUser(new User(email, AccountType.GOOGLE, password, name, surname, birthdate, weight,
+						height, maxHeartRate, restHeartRate));
+			} else if (accountType.equals("facebook")) {
+				stravaService.createUser(new User(email, AccountType.FACEBOOK, password, name, surname, birthdate,
+						weight, height, maxHeartRate, restHeartRate));
+			} else {
+				redirectAttributes.addFlashAttribute("errorMessage", "Invalid account type");
+				return "redirect:/register?redirectUrl=" + redirectUrl;
+			}
+			
+			return "redirect:/login?redirectUrl=" + redirectUrl;
+		} catch (RuntimeException e) {
+			if (e.getMessage().equals("User already exists")) {
+				redirectAttributes.addFlashAttribute("errorMessage", "The user already exists");
+			} else if (e.getMessage().equals("Invalid credentials")) {
+                redirectAttributes.addFlashAttribute("errorMessage", "The password is incorrect");
+			} else {
+				redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
+				e.printStackTrace();
+			}
+		}
+		return "redirect:/register?redirectUrl=" + redirectUrl;
 	}
 	
 	@PostMapping("/login")
 	public String login(
 			@RequestParam(value = "email") String email,
-			@RequestParam(value = "password") String password, 
+			@RequestParam(value = "password") String password,
+			@RequestParam(value = "redirectUrl") String redirectUrl,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
-			stravaService.login(email, password);
-			return "redirect:/";
+			model.addAttribute("redirectUrl", redirectUrl);
+			token = stravaService.login(email, password);
+			return "redirect:"+ redirectUrl;
 		} catch (RuntimeException e) {
 			if (e.getMessage().equals("Invalid credentials")) {
 				redirectAttributes.addFlashAttribute("errorMessage", "The password is incorrect");
@@ -72,7 +129,21 @@ public class ClientController {
 				redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
 			}
 		}
-		return "redirect:/login";
+		return "redirect:/login?redirectUrl=" + redirectUrl;
+	}
+	
+	@GetMapping("/logout")
+	public String logout(
+			@RequestParam(value="token") Long token,
+			Model model) {
+		try {
+			stravaService.logout(token);
+		} catch (RuntimeException e) {
+			System.err.println("Ha oucurrido un error: " + e.getMessage());
+            e.printStackTrace();
+        }
+		
+		return "redirect:/";
 	}
 		
 	

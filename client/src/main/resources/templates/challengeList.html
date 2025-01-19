@@ -31,9 +31,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
-                    <div class="d-inline-flex align-items-center">
-                        <a class="text-white pr-3" th:href="@{/login}">Log in</a>
+					<div th:if="${token}" class="d-inline-flex align-items-center">
+					    <a class="text-white pr-3" th:href="@{/logout(token=${token})}">Log out</a>
+					</div>
+					<div th:unless="${token}" class="d-inline-flex align-items-center">
+                        <a class="text-white pr-3" th:href="@{/login(redirectUrl=${currentUrl})}">Log in</a>
                     </div>
+
                 </div>
                 <div class="col-md-6 text-center text-lg-right">
                     <div class="d-inline-flex align-items-center">

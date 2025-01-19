@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link th:href="@{/style.min.css}" rel="stylesheet">
+    <link href="../static/style.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <!-- Topbar Start -->
+    <div class="container-fluid bg-primary py-3 d-none d-md-block">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
+                    <div class="d-inline-flex align-items-center">
+                        <a class="text-white pr-3" th:href="@{/login}">Log in</a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-center text-lg-right">
+                    <div class="d-inline-flex align-items-center">
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a class="text-white px-3" href="">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a class="text-white pl-3" href="">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Topbar End -->
+
+
+    <!-- Navbar Start -->
+    <div class="container-fluid position-relative nav-bar p-0">
+        <div class="container-lg position-relative p-0 px-lg-3" style="z-index: 9;">
+            <nav class="navbar navbar-expand-lg bg-white navbar-light shadow p-lg-0">
+                <a href="index.html" class="navbar-brand d-block d-lg-none">
+                    <h1 class="m-0 display-4 text-primary">CREAM</h1>
+                </a>
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+                    <div class="navbar-nav ml-auto py-0">
+                        <a href="index.html" class="nav-item nav-link">Challenges</a>
+                        <a href="about.html" class="nav-item nav-link">Create Challenge</a>
+                    </div>
+					<div>
+						
+						<a href="index.html" class="navbar-brand mx-5 d-none d-lg-block" style="display: flex; align-items: center; justify-content: center;">
+						    <img style="width: 15rem;" class="m-0" src="https://i0.wp.com/www.interhacktives.com/wp-content/uploads/2014/02/strava.png?fit=595%2C337&ssl=1" alt="Strava Logo">
+						</a>
+					</div>
+                    <div class="navbar-nav mr-auto py-0">
+                        <a href="service.html" class="nav-item nav-link active">Training Sessions</a>
+                        <a href="gallery.html" class="nav-item nav-link">Create T. S.</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Services Start -->
+	<div class="container-fluid py-5">
+	        <div class="container py-5">
+	            <div class="row justify-content-center">
+	                <div class="col-lg-6">
+	                    <h1 class="section-title position-relative text-center mb-5">Contact Us For Any Query</h1>
+	                </div>
+	            </div>
+	            <div class="row justify-content-center">
+	                <div class="col-lg-9">
+	                    <div class="contact-form bg-light rounded p-5">
+							<div th:if="${errorMessage}">
+								<p class="errorMessage"><span th:text=${errorMessage}></span></p>
+							</div>
+	                        <form th:action="@{/register(redirectUrl=${redirectUrl})}" method="post" name="sentMessage" id="contactForm">
+	                            <div class="control-group">
+	                                <input type="text" class="form-control p-4" id="email" name="email" placeholder="Email" required="required" data-validation-required-message="Please enter a subject" />
+	                                <p class="help-block text-danger"></p>
+	                            </div>
+								<div class="control-group">
+								    <input type="passowrd" class="form-control p-4" id="password" name="password" placeholder="Password" required="required" data-validation-required-message="Please enter a subject" />
+								    <p class="help-block text-danger"></p>
+								</div>
+								<div class="form-row">
+									<div class="col-sm-6 control-group">
+										<label for="google">Google</label>
+										<input type="radio" class="form-control p-4" id="google" name="accountType" value="google" required="required" data-validation-required-message="Please enter your name" />
+											<p class="help-block text-danger"></p>
+									</div>
+									<div class="col-sm-6 control-group">
+										<label for="facebook">Facebook</label>
+										<input type="radio" class="form-control p-4" id="facebook" name="accountType" value="facebook" required="required" data-validation-required-message="Please enter your name"/>
+											<p class="help-block text-danger"></p>
+									</div>
+								</div>							
+								<div class="form-row">
+									<div class="col-sm-6 control-group">
+										<input type="text" class="form-control p-4" id="name" name="name" placeholder="Name" required="required" data-validation-required-message="Please enter your name" />
+											<p class="help-block text-danger"></p>
+									</div>
+									<div class="col-sm-6 control-group">
+										<input type="text" class="form-control p-4" id="surname" name="surname" placeholder="Surname" required="required" data-validation-required-message="Please enter your email" />
+											<p class="help-block text-danger"></p>
+									</div>
+								</div>
+								<div class="control-group">
+									<input type="date" class="form-control p-4" id="birthdate" name="birthdate" placeholder="Birthdate" required="required" data-validation-required-message="Please enter a subject" />
+									<p class="help-block text-danger"></p>
+								</div>
+								<div class="form-row">
+									<div class="col-sm-6 control-group">
+										<input type="number" class="form-control p-4" id="height" name="height" placeholder="Height"/>
+											<p class="help-block text-danger"></p>
+									</div>
+									<div class="col-sm-6 control-group">
+										<input type="number" class="form-control p-4" id="weight" name="weight" placeholder="Weight"/>
+											<p class="help-block text-danger"></p>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="col-sm-6 control-group">
+										<input type="number" class="form-control p-4" id="maxHearthRate" name="maxHearthRate" placeholder="Max Hearth Rate"/>
+											<p class="help-block text-danger"></p>
+									</div>
+									<div class="col-sm-6 control-group">
+										<input type="number" class="form-control p-4" id="minHearthRate" name="minHearthRate" placeholder="Min Hearth Rate"/>
+											<p class="help-block text-danger"></p>
+									</div>
+								</div>
+	                            <div>
+	                                <button class="btn btn-primary btn-block py-3 px-5" type="submit" id="sendMessageButton">Register</button>
+	                            </div>
+	                        </form>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+    <!-- Services End -->
+
+    <!-- Footer Start -->
+    <div class="container-fluid footer bg-orange" style="color : white;">
+        <div class="container text-center py-5">
+            <div class="row">
+                <div class="col-12 mb-4">
+                <img width= "20%" style="margin: 0;" class="m-0 display-4 text-primary" src="https://d3nn82uaxijpm6.cloudfront.net/assets/website_v2/svgs/strava-white-cfde2bcc58a56430af3519272109b1c6a8f089d7bdc85b311bfaae63dd448751.svg" alt="" >
+                </div>
+                <div class="col-12 mb-4">
+                    <a class="btn btn-outline-secondary btn-social mr-2" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-secondary btn-social mr-2" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-secondary btn-social mr-2" href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a class="btn btn-outline-secondary btn-social" href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+                <div class="col-12 mt-2 mb-4">
+                        <div class="col-sm-6 text-center text-sm-center mb-3 mb-sm-0">
+                            <h5 class="font-weight-bold mb-2">Get In Touch</h5>
+                            <p class="mb-2">123 Street, New York, USA</p>
+                            <p class="mb-0">+012 345 67890</p>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-secondary px-2 back-to-top"><i class="fa fa-angle-double-up"></i></a>
+
+
+</body>
+
+</html>

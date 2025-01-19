@@ -18,4 +18,5 @@ public interface IStravaServiceProxy {
 	void createTrainingSession(TrainingSession trainingSession, String token);
 	List<TrainingSession> getTrainingSessions(String token);
 	List<TrainingSession> getTrainingSessionsByDate(String token, Date startDate, Date endDate);
+
 }

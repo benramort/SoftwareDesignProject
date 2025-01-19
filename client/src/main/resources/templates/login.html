@@ -106,19 +106,22 @@
                         <div th:if="${errorMessage}">
 							<p class="errorMessage"><span th:text=${errorMessage}></span></p>
 						</div>
-                        <form th:action="@{/login}" method="post" name="sentMessage" id="contactForm" novalidate="novalidate">
+                        <form th:action="@{/login(redirectUrl=${redirectUrl})}" method="post" name="sentMessage" id="contactForm">
                             <div class="control-group">
-                                <input type="text" class="form-control p-4" name="email" id="email" placeholder="Email" required="required" data-validation-required-message="Please enter an email" />
+                                <input type="text" class="form-control p-4" name="email" id="email" placeholder="Email" required data-validation-required-message="Please enter an email" />
                                 <p class="help-block text-danger"></p>
                             </div>
 							<div class="control-group">
-							    <input type="password" class="form-control p-4" name="password" id="password" placeholder="Password" required="required" data-validation-required-message="Please enter a password" />
+							    <input type="password" class="form-control p-4" name="password" id="password" placeholder="Password" required data-validation-required-message="Please enter a password" />
 							   	<p class="help-block text-danger"></p>
 							</div>
                             <div>
                                 <button class="btn btn-primary btn-block py-3 px-5" type="submit" id="sendMessageButton">Log in</button>
                             </div>
                         </form>
+						<div class="link">
+							<a th:href="@{/register(redirectUrl=${redirectUrl})}" class="btn-link">You dont have an account? Register here</a>
+						</div>
                     </div>
                 </div>
             </div>
