@@ -49,7 +49,7 @@ public class TrainingSessionController {
             ) {
 		try {
 
-			trainingSessionService.createTrainingSession(token, trainingSession.getId(),trainingSession.getTitle(), trainingSession.getSport(), trainingSession.getStartDate(), trainingSession.getDistance(), trainingSession.getDuration());
+			trainingSessionService.createTrainingSession(token, trainingSession.getTitle(), trainingSession.getSport(), trainingSession.getStartDate(), trainingSession.getDistance(), trainingSession.getDuration());
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch (RuntimeException e) {
 			e.printStackTrace();
