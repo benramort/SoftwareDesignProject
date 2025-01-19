@@ -57,8 +57,11 @@ public class ClientController {
 	
 	@GetMapping("/login")
 	public String showLoginPage(
-			@RequestParam(value = "redirectUrl") String redirectUrl,
+			@RequestParam(value = "redirectUrl", required = false) String redirectUrl,
 			Model model) {
+		if (redirectUrl == null) {
+			redirectUrl = "/";
+		}
 		model.addAttribute("redirectUrl", redirectUrl);
 		return "login";
 	}
