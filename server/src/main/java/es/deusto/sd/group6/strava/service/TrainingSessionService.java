@@ -30,12 +30,16 @@ public class TrainingSessionService {
 	
 	public void createTrainingSession(long token,long id, String title, Sport sport, Date startDate, float distance, float duration) {
 		User user = userService.getUser(token);
+		
 		if(user != null) {
-			TrainingSession trainingSession = new TrainingSession(idGenerator.incrementAndGet(), title, sport, startDate, distance, duration);
+			TrainingSession trainingSession = new TrainingSession(title, sport, startDate, distance, duration);
 			trainingSessionRepository.save(trainingSession);
 			user.addTrainingSession(trainingSession); //Lo he cambiado
+			System.out.println("usuario: "+user.getEmail()+" training: "+trainingSession.getId());
 			userRepository.save(user);
+
 		} else {
+			System.out.println("hola1");
 			throw new RuntimeException("User not found");
 		}
 	}

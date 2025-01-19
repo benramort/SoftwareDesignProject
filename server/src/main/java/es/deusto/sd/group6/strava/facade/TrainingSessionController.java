@@ -52,6 +52,8 @@ public class TrainingSessionController {
 			trainingSessionService.createTrainingSession(token, trainingSession.getId(),trainingSession.getTitle(), trainingSession.getSport(), trainingSession.getStartDate(), trainingSession.getDistance(), trainingSession.getDuration());
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		}catch (RuntimeException e) {
+			e.printStackTrace();
+			System.out.println("holasoyelget ");
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 	}

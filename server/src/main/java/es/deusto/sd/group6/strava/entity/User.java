@@ -180,7 +180,6 @@ public class User {
 
 	public void addTrainingSession(TrainingSession trainingSession) {
 		this.lTrainingSessions.add(trainingSession);
-		lTrainingSessions.sort(null);
 	}
 
 	@Override

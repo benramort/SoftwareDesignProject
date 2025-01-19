@@ -110,7 +110,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 	}
 
 	@Override
-	public 	void createTrainingSession(TrainingSession trainingSession, long token) {
+	public void createTrainingSession(TrainingSession trainingSession, long token) {
 
 		String url = apiBaseUrl + "/trainingSessions?token=" + token;
 
@@ -119,8 +119,6 @@ public class ServiceProxy implements IStravaServiceProxy {
 		} catch (HttpStatusCodeException e) {
 			switch (e.getStatusCode().value()) {
 			case 403 -> throw new RuntimeException("User not found");
-
-			//
 			default -> throw new RuntimeException("Create training session failed with status code: " + e.getStatusCode());
 			}
 		}
@@ -147,7 +145,12 @@ public class ServiceProxy implements IStravaServiceProxy {
 	@Override
 	public List<TrainingSession> getTrainingSessionsByDate(long token, Date startDate, Date endDate)
 	{
-		String url = apiBaseUrl + "/trainingSessions?token=" + token+"&startDate="+startDate+"&endDate="+endDate;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	    
+	    String formattedStartDate = dateFormat.format(startDate);
+	    String formattedEndDate = dateFormat.format(endDate);
+		String url = apiBaseUrl + "/trainingSessions/byDate?token=" + token+"&startDate="+formattedStartDate+"&endDate="+formattedEndDate;
+		System.out.println(url);
 		try {
 			return restTemplate.exchange(
 		            url,
