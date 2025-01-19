@@ -11,7 +11,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import es.deusto.sd.group6.client.data.Challenge;
 import es.deusto.sd.group6.client.data.ChallengeProgress;
-import es.deusto.sd.group6.client.data.LoginDTO;
+import es.deusto.sd.group6.client.data.Login;
 import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.User;
 
@@ -85,7 +85,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 
 	@Override
 	public Long login(String email, String password) {
-		LoginDTO login = new LoginDTO(email, password);
+		Login login = new Login(email, password);
 		try {
 			Long token = restTemplate.postForObject(apiBaseUrl + "/users/login", login, Long.class);
 			return token;
