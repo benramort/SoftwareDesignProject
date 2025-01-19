@@ -54,7 +54,7 @@ public class ServiceProxy implements IStravaServiceProxy {
     }
     
     @Override
-    public void joinChallenge(long id, String token){
+    public void joinChallenge(long id, long token){
     	String url = apiBaseUrl + "/challenges/" + id + "?token=" +  token;
     	try {
             restTemplate.postForObject(url, null, Void.class);
@@ -110,7 +110,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 	}
 
 	@Override
-	public 	void createTrainingSession(TrainingSession trainingSession, String token) {
+	public 	void createTrainingSession(TrainingSession trainingSession, long token) {
 
 		String url = apiBaseUrl + "/trainingSessions?token=" + token;
 

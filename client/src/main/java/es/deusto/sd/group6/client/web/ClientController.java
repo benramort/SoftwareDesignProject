@@ -30,14 +30,17 @@ public class ClientController {
 	@Autowired
 	IStravaServiceProxy stravaService;
 
-	private String token = "1737225735002"; 
+	private Long token = null; 
 	
 	@ModelAttribute
 	public void addAttributes(Model model, HttpServletRequest request) {
 
 		String currentUrl = ServletUriComponentsBuilder.fromRequestUri(request).toUriString();
 		model.addAttribute("currentUrl", currentUrl); // Makes current URL available in all templates.
-		model.addAttribute("token", token); // Makes token available in all templates
+		System.out.println(model.containsAttribute("token"));
+		if (token != null) {
+			model.addAttribute("token", token);
+		}
 	}
 	
 	@GetMapping("/")
@@ -116,7 +119,7 @@ public class ClientController {
 			RedirectAttributes redirectAttributes) {
 		try {
 			model.addAttribute("redirectUrl", redirectUrl);
-			stravaService.login(email, password);
+			token = stravaService.login(email, password);
 			return "redirect:"+ redirectUrl;
 		} catch (RuntimeException e) {
 			if (e.getMessage().equals("Invalid credentials")) {

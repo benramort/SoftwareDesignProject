@@ -31,7 +31,7 @@ public class TrainingSessionService {
 		if(user != null) {
 			TrainingSession trainingSession = new TrainingSession(id, title, sport, startDate, distance, duration);
 			trainingSessionRepository.save(trainingSession);
-			user.getTrainingSessions().add(trainingSession); 
+			user.addTrainingSession(trainingSession); //Lo he cambiado
 			userRepository.save(user);
 		} else {
 			throw new RuntimeException("User not found");
