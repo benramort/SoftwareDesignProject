@@ -39,15 +39,6 @@ public class ClientController {
 		model.addAttribute("token", token); // Makes token available in all templates
 	}
 	
-	private String token="1737223418228";
-
-	@ModelAttribute
-	public void addAttributes(Model model, HttpServletRequest request) {
-		String currentUrl = ServletUriComponentsBuilder.fromRequestUri(request).toUriString();
-		model.addAttribute("currentUrl", currentUrl);
-		model.addAttribute("token", token);
-	}
-	
 	@GetMapping("/")
 	public String home(Model model) {
 //		stravaService.createUser(new User("user1", AccountType.FACEBOOK, "password1", "name1", "surname1", new Date(), -1, -1, -1f, -1f));
@@ -61,6 +52,50 @@ public class ClientController {
 	@GetMapping("/login")
 	public String showLoginPage(Model model) {
 		return "login";
+	}
+	
+	@GetMapping("/register")
+	public String showRegisterPage(Model model) {
+		return "register";
+	}
+	
+	@PostMapping("/register")
+	public String register(@RequestParam(value = "email") String email,
+			@RequestParam(value = "password") String password,
+			@RequestParam(value = "name") String name,
+			@RequestParam(value = "surname") String surname,
+			@RequestParam(value = "accountType") String accountType,
+			@RequestParam(value = "birthdate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date birthdate,
+			@RequestParam(value = "weight", required = false) Integer weight,
+			@RequestParam(value = "height", required = false) Integer height,
+			@RequestParam(value = "maxHeartRate", required = false) Float maxHeartRate,
+			@RequestParam(value = "restHeartRate", required = false) Float restHeartRate,
+			Model model,
+			RedirectAttributes redirectAttributes) {
+		try {
+			if (accountType.equals("google")) {
+				stravaService.createUser(new User(email, AccountType.GOOGLE, password, name, surname, birthdate, weight,
+						height, maxHeartRate, restHeartRate));
+			} else if (accountType.equals("facebook")) {
+				stravaService.createUser(new User(email, AccountType.FACEBOOK, password, name, surname, birthdate,
+						weight, height, maxHeartRate, restHeartRate));
+			} else {
+				redirectAttributes.addFlashAttribute("errorMessage", "Invalid account type");
+				return "redirect:/register";
+			}
+			
+			return "redirect:/login";
+		} catch (RuntimeException e) {
+			if (e.getMessage().equals("User already exists")) {
+				redirectAttributes.addFlashAttribute("errorMessage", "The user already exists");
+			} else if (e.getMessage().equals("Invalid credentials")) {
+                redirectAttributes.addFlashAttribute("errorMessage", "The password is incorrect");
+			} else {
+				redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
+				e.printStackTrace();
+			}
+		}
+		return "redirect:/register";
 	}
 	
 	@PostMapping("/login")

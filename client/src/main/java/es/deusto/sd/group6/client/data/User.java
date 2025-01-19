@@ -9,9 +9,11 @@ public record User(
     String name,
     String surname,
     Date birthdate,
-    int weight,
-    int height,
-    float maxHeartRate,
-    float restHeartRate) {
-
+    Integer weight,
+    Integer heigh,
+    Float maxHeartRate,
+    Float minHeartRate
+    ) {
 }
+
+
