@@ -21,6 +21,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web-services'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	
 	// SpringDoc OpenAPI UI Dependency this is needed to use Swagger annotations
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
