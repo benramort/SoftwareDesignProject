@@ -14,9 +14,9 @@ public interface IStravaServiceProxy {
 	public Long login(String email, String password);
 	public void logout(long token);
 	List<Challenge> getActiveChallenges(Sport filterSport, Date filterDate);
-	void joinChallenge(long id, String token);
-	void createTrainingSession(TrainingSession trainingSession, String token);
-	List<TrainingSession> getTrainingSessions(String token);
-	List<TrainingSession> getTrainingSessionsByDate(String token, Date startDate, Date endDate);
+	void joinChallenge(long id, long token);
+	void createTrainingSession(TrainingSession trainingSession, long token);
+	List<TrainingSession> getTrainingSessions(long token);
+	List<TrainingSession> getTrainingSessionsByDate(long token, Date startDate, Date endDate);
 
 }

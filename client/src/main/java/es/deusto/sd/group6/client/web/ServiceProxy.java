@@ -127,7 +127,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 	}
 	
 	@Override
-	public List<TrainingSession> getTrainingSessions(String token){
+	public List<TrainingSession> getTrainingSessions(long token){
 		String url = apiBaseUrl + "/trainingSessions?token=" + token;
 		try {
 			return restTemplate.exchange(
@@ -145,7 +145,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 	}
 	
 	@Override
-	public List<TrainingSession> getTrainingSessionsByDate(String token, Date startDate, Date endDate)
+	public List<TrainingSession> getTrainingSessionsByDate(long token, Date startDate, Date endDate)
 	{
 		String url = apiBaseUrl + "/trainingSessions?token=" + token+"&startDate="+startDate+"&endDate="+endDate;
 		try {
