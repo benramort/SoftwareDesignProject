@@ -163,7 +163,8 @@ public class ClientController {
             @RequestParam("isDistance") String isDistance,
             @RequestParam("goal") float goal,
             @RequestParam("sport") Sport sport,
-            Model model) {
+            Model model,
+            RedirectAttributes redirectAttributes) {
         try {
         	System.out.println(isDistance);
         	boolean isDistanceBoolean;
@@ -177,12 +178,13 @@ public class ClientController {
             }
             Challenge challenge = new Challenge(null, name, startDateParsed, endDateParsed, isDistanceBoolean, goal, sport);
             stravaService.createChallenge(token, challenge);
-            model.addAttribute("message", "Challenge created successfully!");
+			redirectAttributes.addFlashAttribute("successMessage", "Challenge created successfully!");
+
         } catch (Exception e) {
         	e.printStackTrace();
-            model.addAttribute("error", "An error occurred: " + e.getMessage());
+			redirectAttributes.addFlashAttribute("errorMessage", "Failed to create a challenge: " + e.getMessage());
         }
-        return "createChallenge";
+        return "redirect:/challenges";
     }
 		
 	

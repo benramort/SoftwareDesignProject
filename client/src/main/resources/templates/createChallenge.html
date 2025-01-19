@@ -104,7 +104,7 @@
 
     <!-- Services Start -->
     <div class="container-fluid py-5">
-		<p th:if="${token == null}" class="errorMessage fs-5">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to create a training session</p>
+		<p th:if="${token == null}" class="errorMessage fs-5">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to create a challenge</p>
         <div th:if="${token != null}" class="container py-5">
 			<div class = "text-center"> 				
 				<p class="mb-4">Fill in the details below to create a new challenge.</p>
@@ -160,8 +160,6 @@
 						            <option value="RUNNING">Running</option>
 
 						            <option value="CYCLING">Cycling</option>
-
-						            <option value="ANY">Any</option>
 
 						        </select>
 
