@@ -16,7 +16,6 @@ import es.deusto.sd.group6.strava.entity.User;
 @Service
 public class TrainingSessionService {
 	//private User user;
-	private AtomicLong idGenerator = new AtomicLong(0);
 	private UserService userService; //para token
 	private TrainingSessionRepository trainingSessionRepository;
 	private UserRepository userRepository;
@@ -28,7 +27,7 @@ public class TrainingSessionService {
 	}
 
 	
-	public void createTrainingSession(long token,long id, String title, Sport sport, Date startDate, float distance, float duration) {
+	public void createTrainingSession(long token, String title, Sport sport, Date startDate, float distance, float duration) {
 		User user = userService.getUser(token);
 		
 		if(user != null) {

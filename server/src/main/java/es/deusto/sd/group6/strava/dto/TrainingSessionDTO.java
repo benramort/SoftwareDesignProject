@@ -17,7 +17,6 @@ public class TrainingSessionDTO {
 	
 	public TrainingSessionDTO(long id,String title, Sport sport, Date startDate, float distance,
 			float duration) {
-		this.id = id;
 		this.title = title;
 		this.sport = sport;
 		this.startDate = startDate;
