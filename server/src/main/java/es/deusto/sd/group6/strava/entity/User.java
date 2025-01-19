@@ -60,7 +60,7 @@ public class User {
     )
 	private List<Challenge> acceptedChallenges;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<TrainingSession> lTrainingSessions;
 
 	public User() {}

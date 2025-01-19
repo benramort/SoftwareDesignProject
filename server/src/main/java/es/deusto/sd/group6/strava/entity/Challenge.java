@@ -1,6 +1,7 @@
 package es.deusto.sd.group6.strava.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import es.deusto.sd.group6.strava.dto.ChallengeDTO;
@@ -11,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -43,6 +45,9 @@ public class Challenge {
 	@ManyToOne
     @JoinColumn(name = "user_email", nullable = false)
 	private User creator;
+
+	@ManyToMany(mappedBy = "acceptedChallenges")
+	private List<User> acceptedUsers;
 	
 	public Challenge() {}
 	

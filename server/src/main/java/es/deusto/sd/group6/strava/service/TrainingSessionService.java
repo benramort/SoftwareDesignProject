@@ -31,7 +31,7 @@ public class TrainingSessionService {
 		User user = userService.getUser(token);
 		
 		if(user != null) {
-			TrainingSession trainingSession = new TrainingSession(title, sport, startDate, distance, duration);
+			TrainingSession trainingSession = new TrainingSession(user, title, sport, startDate, distance, duration);
 			trainingSessionRepository.save(trainingSession);
 			user.addTrainingSession(trainingSession); //Lo he cambiado
 			System.out.println("usuario: "+user.getEmail()+" training: "+trainingSession.getId());

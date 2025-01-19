@@ -135,6 +135,7 @@ public class ClientController {
 			@RequestParam(value="token") Long token,
 			Model model) {
 		try {
+			this.token = null;
 			stravaService.logout(token);
 		} catch (RuntimeException e) {
 			System.err.println("Ha oucurrido un error: " + e.getMessage());
