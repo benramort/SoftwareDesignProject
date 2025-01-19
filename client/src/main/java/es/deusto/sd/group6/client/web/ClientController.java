@@ -30,16 +30,7 @@ public class ClientController {
 	@Autowired
 	IStravaServiceProxy stravaService;
 
-	private String token = "1737225735002"; 
-	
-	@ModelAttribute
-	public void addAttributes(Model model, HttpServletRequest request) {
-		String currentUrl = ServletUriComponentsBuilder.fromRequestUri(request).toUriString();
-		model.addAttribute("currentUrl", currentUrl); // Makes current URL available in all templates
-		model.addAttribute("token", token); // Makes token available in all templates
-	}
-	
-	private String token="1737223418228";
+	private String token = "1737302834970";
 
 	@ModelAttribute
 	public void addAttributes(Model model, HttpServletRequest request) {
@@ -87,7 +78,7 @@ public class ClientController {
 	
 	@GetMapping("/activeChallenges")
 	public String getActiveChallenges(
-	    @RequestParam(value = "filterSport", required = false) Sport filterSport,
+	    @RequestParam(value = "filterSport", required = false, defaultValue = "ANY") Sport filterSport,
 	    @RequestParam(value = "filterDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date filterDate,
 	    Model model) {
 
@@ -99,22 +90,21 @@ public class ClientController {
 	        model.addAttribute("filterSport", filterSport);
 	        model.addAttribute("filterDate", filterDate);
 	        
-	        System.out.println("Challenge list: " + challenges.size());
 	    } catch (RuntimeException e) {
 	        model.addAttribute("errorMessage", "Failed to load challenges: " + e.getMessage());
 	    }
 
 	    return "challengeList";
 	}
-	@PostMapping("/challenge")
-	public String makeBid(@RequestParam("id") Long id,
+	@PostMapping("/activeChallenge")
+	public String joinActiveChallengeBid(@RequestParam("id") Long id,
 			@RequestParam(value = "redirectUrl", required = false) String redirectUrl,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
 			stravaService.joinChallenge(id, token);
 			redirectAttributes.addFlashAttribute("successMessageId", id);
-			redirectAttributes.addFlashAttribute("successMessage", "Challenge join!");
+			redirectAttributes.addFlashAttribute("successMessage", "Challenge joined!");
 		} catch (RuntimeException e) {
 			redirectAttributes.addFlashAttribute("errorMessageId", id);
 			redirectAttributes.addFlashAttribute("errorMessage", "Failed to join the challenge: " + e.getMessage());
@@ -123,19 +113,20 @@ public class ClientController {
 		return "redirect:" + (redirectUrl != null && !redirectUrl.isEmpty() ? redirectUrl : "/");
 	}
 
-	@GetMapping("/trainingSessions")
+	@GetMapping("/trainingSession")
     public String showTrainingSessionForm(Model model) {
         return "createTrainingSession";
     }
 	
-	@PostMapping("/trainingSessions") 
+	@PostMapping("/trainingSession") 
 	public String createTrainingSession(
 			@RequestParam("title") String title,
 			@RequestParam("sport") String sport,
 			@RequestParam("startDate") String startDate,
 			@RequestParam("distance") float distance,
 			@RequestParam("duration") float duration,
-			Model model) {
+			Model model,
+			RedirectAttributes redirectAttributes) {
 
 		try {
 			Sport sportEnum = Sport.valueOf(sport.toUpperCase());
@@ -144,11 +135,39 @@ public class ClientController {
 			TrainingSession trainingSession = new TrainingSession(0L, title, sportEnum, startDateParsed, distance, duration);
 
 			stravaService.createTrainingSession(trainingSession, token);
-			model.addAttribute("message", "Training session created successfully!");
+			redirectAttributes.addFlashAttribute("successMessage", "Training session created successfully!");
 		} catch (Exception e) {
-			model.addAttribute("error", "An error occurred: " + e.getMessage());
+			redirectAttributes.addFlashAttribute("errorMessage", "Failed to create a trainig session: " + e.getMessage());
 		}
-		return "createTrainingSession"; 
+		return "redirect:/trainingSession";
 
 	}
+	
+	@GetMapping("/trainingSessions")
+    public String getTrainingSession(Model model) {
+		try {
+			List<TrainingSession> trainingSessions = stravaService.getTrainingSessions(token);
+			model.addAttribute("trainingSessions", trainingSessions);
+		} catch (RuntimeException e) {
+			model.addAttribute("errorMessage", "Failed to load training sessions: " + e.getMessage());
+		}
+
+        return "TrainingSessionList";
+    }
+	@GetMapping("/trainingSessions/byDate")
+    public String getTrainingSessionByDate(
+    	    @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+    	    @RequestParam(value = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+    		Model model) {
+		try {
+			List<TrainingSession> trainingSessions = stravaService.getTrainingSessionsByDate(token,startDate,endDate);
+			model.addAttribute("trainingSessions", trainingSessions);
+			model.addAttribute("startDate", startDate);
+	        model.addAttribute("endDate", endDate);
+		} catch (RuntimeException e) {
+			model.addAttribute("errorMessage", "Failed to load training sessions: " + e.getMessage());
+		}
+
+        return "TrainingSessionList";
+    }
 }

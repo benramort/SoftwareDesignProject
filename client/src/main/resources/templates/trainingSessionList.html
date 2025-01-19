@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Challenges</title>
+    <title>Training Sessions</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -95,7 +95,7 @@
     <!-- Header Start -->
     <div class="jumbotron jumbotron-fluid page-header">
         <div class="container text-center py-5">
-            <h1 class="text-white display-3 mt-lg-5">CHALLENGES</h1>
+            <h1 class="text-white display-3 mt-lg-5">TRAINING SESSIONS</h1>
         </div>
     </div>
     <!-- Header End -->
@@ -104,65 +104,54 @@
     <!-- Services Start -->
     <div class="container-fluid py-5">
         <div class="container py-5">
-
-
+			
 			<div class="d-flex justify-content-end align-items-center mb-4">
-			    <form th:action="@{/activeChallenges}" method="get" class="d-flex align-items-center me-3">
-			        <label for="filterSport" class="form-label mb-0 me-2">Sport:</label>
-			        <select name="filterSport" id="filterSport" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
-			            <option value="ANY" th:selected="${filterSport.name() == 'ANY'}">Any</option>
-			            <option value="RUNNING" th:selected="${filterSport.name() == 'RUNNING'}">Running</option>
-			            <option value="CYCLING" th:selected="${filterSport.name() == 'CYCLING'}">Cycling</option>
-			        </select>
-			    </form>
-
-			    <form th:action="@{/activeChallenges}" method="get" class="d-flex align-items-center">
-			        <label for="date" class="form-label mb-0 me-2">Date:</label>
-			        <input type="date" name="filterDate" id="date" 
-			               class="inputdate form-control form-control-sm w-auto" 
-			               th:value="${#dates.format(filterDate, 'yyyy-MM-dd')}" onchange="this.form.submit()">
-			    </form>
-			</div>
-
+				<form th:action="@{/trainingSessions/byDate}" method="get" class="d-flex align-items-center">
+					<label for="startdate" class="form-label mb-0 me-2">Start Date:</label>
+					<input type="date" name="startDate" id="startdate" 
+					class="inputdate form-control form-control-sm w-auto" 
+					th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" required>
+					<label for="endtdate" class="form-label mb-0 me-2">End Date:</label>
+					<input type="date" name="endDate" id="endtdate" 
+					class="inputdate form-control form-control-sm w-auto" 
+					th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" required>
+					<button type="submit" class="btn btn-primary">Find</button>
+				</form>
+			</div>	
+						
             <div class="d-flex justify-content-between align-items-center mb-4">
             </div>
 
-
-			<p th:if="${challenges == null or challenges.isEmpty()}" class="errorMessage fs-5">There aren't any challenges available.</p>
-            <div class="row mt-4" th:each="challenge : ${challenges}">
+			<p th:if="${trainingSessions == null or trainingSessions.isEmpty()}" class="errorMessage fs-5">There aren't any Training Sessions available.</p>
+			<p th:if="${token == null}" class="errorMessage fs-5">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to see your training sessions</p>
+            <div class="row mt-4" th:each="trainingSession : ${trainingSessions}">
                 <div class="col-12">
                     <div class="owl-carousel service-carousel">
                         <div class="service-item">
 
-                            <div class="position-relative text-left bg-light rounded p-4 pb-5">
-                                <h5 th:text="${challenge.name}" class="font-weight-semi-bold mb-3 text-center">NAME</h5>
-                                <div class="row align-items-center" style="height: auto;">
-                                    <div class="col-md-4 d-flex flex-column justify-content-center">
-                                        <p><strong>Start Date: </strong><span th:text="${#dates.format(challenge.startDate, 'yyyy-MM-dd')}"></span></p>
-                                        <p><strong>End Date: </strong><span th:text="${#dates.format(challenge.endDate, 'yyyy-MM-dd')}"></span></p>
-                                    </div>
-                                    <div class="col-md-4 d-flex flex-column justify-content-center">
-                                        <p><strong>Sport: </strong><span th:text="${challenge.sport}"></span></p>
-                                        <p><strong>Goal: </strong><span th:text="${challenge.goal}"></span><span th:text="${challenge.isDistance ? ' km' : ' h'}"></span></p>
-                                    </div>
-                                    <div th:if="${token != null && challenge != null}" class="col-md-4 d-flex flex-column justify-content-center">
-										<form th:action="@{/activeChallenge(redirectUrl=${currentUrl})}" method="post" class="p-4" style="display: flex; flex-direction: column;">
-											<input type="hidden" th:name="id" th:value="${challenge.id}" />
-                                        	<button class="btn btn-primary mt-3 joinbutton">JOIN</button>
-										</form>										
-										<p th:if="${errorMessageId == challenge.id}" th:text="${errorMessage}" class="text-danger mt-4"></p>
-										<p th:if="${successMessageId == challenge.id}" th:text="${successMessage}" class="text-success mt-4"></p>
-                                    </div>
-										<p th:if="${token == null}" class="text-danger">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to join a challenge.</p>
-                                </div>
-                                <div class="text-center">
-                                </div>
-                            </div>
+							<div class="container-sm position-relative bg-light rounded p-3 pb-4"> <!-- Menor padding y container-sm -->
+							    <h5 th:text="${trainingSession.title}" class="font-weight-semi-bold mb-3 text-center">NAME</h5>
+							    <div class="row align-items-center">
+							        <div class="col-md-5 d-flex flex-column justify-content-center"> <!-- Reducido a col-md-5 -->
+							            <p><strong>Sport: </strong><span th:text="${trainingSession.sport}"></span></p>
+							            <p><strong>Start Date: </strong><span th:text="${#dates.format(trainingSession.startDate, 'yyyy-MM-dd')}"></span></p>
+							        </div>
+							        <div class="col-md-5 d-flex flex-column justify-content-center"> <!-- Reducido a col-md-5 -->
+							            <p><strong>Distance: </strong><span th:text="${trainingSession.distance}"></span> km</p>
+							            <p><strong>Duration: </strong><span th:text="${trainingSession.duration}"></span> h</p>
+							        </div>
+							    </div>
+							</div>
                             
                         </div>
                     </div>
                 </div>
             </div>
+			<form th:if="${token != null}" th:action="@{/trainingSession}">
+				<button type="submit" class="btn btn-primary w-100 mt-4">
+					Create Training Session
+				</button>
+			</form>
         </div>
     </div>
     <!-- Services End -->

@@ -125,5 +125,42 @@ public class ServiceProxy implements IStravaServiceProxy {
 			}
 		}
 	}
+	
+	@Override
+	public List<TrainingSession> getTrainingSessions(String token){
+		String url = apiBaseUrl + "/trainingSessions?token=" + token;
+		try {
+			return restTemplate.exchange(
+		            url,
+		            HttpMethod.GET,
+		            null,
+		            new ParameterizedTypeReference<List<TrainingSession>>() {}
+		        ).getBody();
+		} catch (HttpStatusCodeException e) {
+			switch (e.getStatusCode().value()) {
+			case 403 -> throw new RuntimeException("User not found");
+			default -> throw new RuntimeException("Failed to retrieve training sessions: " + e.getStatusText());
+			}
+		}
+	}
+	
+	@Override
+	public List<TrainingSession> getTrainingSessionsByDate(String token, Date startDate, Date endDate)
+	{
+		String url = apiBaseUrl + "/trainingSessions?token=" + token+"&startDate="+startDate+"&endDate="+endDate;
+		try {
+			return restTemplate.exchange(
+		            url,
+		            HttpMethod.GET,
+		            null,
+		            new ParameterizedTypeReference<List<TrainingSession>>() {}
+		        ).getBody();
+		} catch (HttpStatusCodeException e) {
+			switch (e.getStatusCode().value()) {
+			case 403 -> throw new RuntimeException("User not found");
+			default -> throw new RuntimeException("Failed to retrieve training sessions: " + e.getStatusText());
+			}
+		}
+	}
 }
 

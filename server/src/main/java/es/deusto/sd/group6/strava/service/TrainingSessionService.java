@@ -3,6 +3,7 @@ package es.deusto.sd.group6.strava.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import es.deusto.sd.group6.strava.entity.User;
 @Service
 public class TrainingSessionService {
 	//private User user;
+	private AtomicLong idGenerator = new AtomicLong(0);
 	private UserService userService; //para token
 	private TrainingSessionRepository trainingSessionRepository;
 	private UserRepository userRepository;
@@ -29,7 +31,7 @@ public class TrainingSessionService {
 	public void createTrainingSession(long token,long id, String title, Sport sport, Date startDate, float distance, float duration) {
 		User user = userService.getUser(token);
 		if(user != null) {
-			TrainingSession trainingSession = new TrainingSession(id, title, sport, startDate, distance, duration);
+			TrainingSession trainingSession = new TrainingSession(idGenerator.incrementAndGet(), title, sport, startDate, distance, duration);
 			trainingSessionRepository.save(trainingSession);
 			user.getTrainingSessions().add(trainingSession); 
 			userRepository.save(user);

@@ -6,10 +6,13 @@
  */
  select, .inputdate{
     border: #E95F2A solid 2px !important;
-    border-radius: 10px !important;
+    border-radius: 30px !important;
     margin-left: 5px !important;
     margin-right: 20px !important;
 
+ }
+ input{
+	border: #E95F2A solid 2px !important;
  }
  .joinbutton{
     color: white;

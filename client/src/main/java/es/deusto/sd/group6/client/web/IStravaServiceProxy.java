@@ -16,5 +16,6 @@ public interface IStravaServiceProxy {
 	List<Challenge> getActiveChallenges(Sport filterSport, Date filterDate);
 	void joinChallenge(long id, String token);
 	void createTrainingSession(TrainingSession trainingSession, String token);
-
+	List<TrainingSession> getTrainingSessions(String token);
+	List<TrainingSession> getTrainingSessionsByDate(String token, Date startDate, Date endDate);
 }
