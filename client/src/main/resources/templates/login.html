@@ -106,7 +106,7 @@
                         <div th:if="${errorMessage}">
 							<p class="errorMessage"><span th:text=${errorMessage}></span></p>
 						</div>
-                        <form th:action="@{/login}" method="post" name="sentMessage" id="contactForm">
+                        <form th:action="@{/login(redirectUrl=${redirectUrl})}" method="post" name="sentMessage" id="contactForm">
                             <div class="control-group">
                                 <input type="text" class="form-control p-4" name="email" id="email" placeholder="Email" required data-validation-required-message="Please enter an email" />
                                 <p class="help-block text-danger"></p>
@@ -120,7 +120,7 @@
                             </div>
                         </form>
 						<div class="link">
-							<a th:href="@{/register}" class="btn-link">You dont have an account? Register here</a>
+							<a th:href="@{/register(redirectUrl=${redirectUrl})}" class="btn-link">You dont have an account? Register here</a>
 						</div>
                     </div>
                 </div>

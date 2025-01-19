@@ -34,8 +34,9 @@ public class ClientController {
 	
 	@ModelAttribute
 	public void addAttributes(Model model, HttpServletRequest request) {
+
 		String currentUrl = ServletUriComponentsBuilder.fromRequestUri(request).toUriString();
-		model.addAttribute("currentUrl", currentUrl); // Makes current URL available in all templates
+		model.addAttribute("currentUrl", currentUrl); // Makes current URL available in all templates.
 		model.addAttribute("token", token); // Makes token available in all templates
 	}
 	
@@ -50,12 +51,18 @@ public class ClientController {
 	}
 	
 	@GetMapping("/login")
-	public String showLoginPage(Model model) {
+	public String showLoginPage(
+			@RequestParam(value = "redirectUrl") String redirectUrl,
+			Model model) {
+		model.addAttribute("redirectUrl", redirectUrl);
 		return "login";
 	}
 	
 	@GetMapping("/register")
-	public String showRegisterPage(Model model) {
+	public String showRegisterPage(
+			@RequestParam(value = "redirectUrl") String redirectUrl,
+			Model model) {
+		model.addAttribute("redirectUrl", redirectUrl);
 		return "register";
 	}
 	
@@ -70,9 +77,11 @@ public class ClientController {
 			@RequestParam(value = "height", required = false) Integer height,
 			@RequestParam(value = "maxHeartRate", required = false) Float maxHeartRate,
 			@RequestParam(value = "restHeartRate", required = false) Float restHeartRate,
+			@RequestParam(value = "redirectUrl") String redirectUrl,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
+			model.addAttribute("redirectUrl", redirectUrl);
 			if (accountType.equals("google")) {
 				stravaService.createUser(new User(email, AccountType.GOOGLE, password, name, surname, birthdate, weight,
 						height, maxHeartRate, restHeartRate));
@@ -81,10 +90,10 @@ public class ClientController {
 						weight, height, maxHeartRate, restHeartRate));
 			} else {
 				redirectAttributes.addFlashAttribute("errorMessage", "Invalid account type");
-				return "redirect:/register";
+				return "redirect:/register?redirectUrl=" + redirectUrl;
 			}
 			
-			return "redirect:/login";
+			return "redirect:/login?redirectUrl=" + redirectUrl;
 		} catch (RuntimeException e) {
 			if (e.getMessage().equals("User already exists")) {
 				redirectAttributes.addFlashAttribute("errorMessage", "The user already exists");
@@ -95,18 +104,20 @@ public class ClientController {
 				e.printStackTrace();
 			}
 		}
-		return "redirect:/register";
+		return "redirect:/register?redirectUrl=" + redirectUrl;
 	}
 	
 	@PostMapping("/login")
 	public String login(
 			@RequestParam(value = "email") String email,
-			@RequestParam(value = "password") String password, 
+			@RequestParam(value = "password") String password,
+			@RequestParam(value = "redirectUrl") String redirectUrl,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
+			model.addAttribute("redirectUrl", redirectUrl);
 			stravaService.login(email, password);
-			return "redirect:/";
+			return "redirect:"+ redirectUrl;
 		} catch (RuntimeException e) {
 			if (e.getMessage().equals("Invalid credentials")) {
 				redirectAttributes.addFlashAttribute("errorMessage", "The password is incorrect");
@@ -116,7 +127,7 @@ public class ClientController {
 				redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error");
 			}
 		}
-		return "redirect:/login";
+		return "redirect:/login?redirectUrl=" + redirectUrl;
 	}
 		
 	
