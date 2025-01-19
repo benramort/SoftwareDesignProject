@@ -36,6 +36,15 @@ public class TrainingSession {
 	
 	public TrainingSession() {}
 	
+	public TrainingSession(String title, Sport sport, Date startDate, float distance,
+			float duration) {
+		this.title = title;
+		this.sport = sport;
+		this.startDate = startDate;
+		this.distance = distance;
+		this.duration = duration;
+	}
+	
 	public TrainingSession(long id, String title, Sport sport, Date startDate, float distance,
 			float duration) {
 		this.id = id;
