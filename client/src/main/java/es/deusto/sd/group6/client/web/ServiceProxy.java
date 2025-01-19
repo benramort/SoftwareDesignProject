@@ -104,7 +104,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 		} catch (HttpStatusCodeException e) {
 			switch (e.getStatusCode().value()) {
 			case 404 -> throw new RuntimeException("User not found");
-			default -> throw new RuntimeException("Failed to login: " + e.getStatusText());
+			default -> throw new RuntimeException("Failed to log out: " + e.getStatusText());
 			}
 		}
 	}

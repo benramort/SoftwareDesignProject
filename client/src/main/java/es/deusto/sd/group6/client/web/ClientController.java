@@ -37,7 +37,6 @@ public class ClientController {
 
 		String currentUrl = ServletUriComponentsBuilder.fromRequestUri(request).toUriString();
 		model.addAttribute("currentUrl", currentUrl); // Makes current URL available in all templates.
-		System.out.println(model.containsAttribute("token"));
 		if (token != null) {
 			model.addAttribute("token", token);
 		}
@@ -131,6 +130,20 @@ public class ClientController {
 			}
 		}
 		return "redirect:/login?redirectUrl=" + redirectUrl;
+	}
+	
+	@GetMapping("/logout")
+	public String logout(
+			@RequestParam(value="token") Long token,
+			Model model) {
+		try {
+			stravaService.logout(token);
+		} catch (RuntimeException e) {
+			System.err.println("Ha oucurrido un error: " + e.getMessage());
+            e.printStackTrace();
+        }
+		
+		return "redirect:/";
 	}
 		
 	
