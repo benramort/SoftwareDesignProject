@@ -175,11 +175,8 @@ public class ClientController {
             	isDistanceBoolean = false;
             }
             Challenge challenge = new Challenge(null, name, startDateParsed, endDateParsed, isDistanceBoolean, goal, sport);
-            System.out.println("v1:" + challenge);
             stravaService.createChallenge(token, challenge);
-            System.out.println("v2:" + challenge);
             model.addAttribute("message", "Challenge created successfully!");
-            System.out.println("v3:" + challenge);
         } catch (Exception e) {
         	e.printStackTrace();
             model.addAttribute("error", "An error occurred: " + e.getMessage());
