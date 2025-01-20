@@ -46,6 +46,7 @@ public class TrainingSession {
 	
 	public TrainingSession(User user, String title, Sport sport, Date startDate, float distance,
 			float duration) {
+		this.user = user;
 		this.title = title;
 		this.sport = sport;
 		this.startDate = startDate;
