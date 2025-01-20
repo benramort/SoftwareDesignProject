@@ -31,10 +31,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
-					<div th:if="${token}" class="d-inline-flex align-items-center">
-					    <a class="text-white pr-3" th:href="@{/logout(token=${token})}">Log out</a>
+					<div th:if="${session.token}" class="d-inline-flex align-items-center">
+					    <a class="text-white pr-3" th:href="@{/logout(token=${session.token})}">Log out</a>
 					</div>
-					<div th:unless="${token}" class="d-inline-flex align-items-center">
+					<div th:unless="${session.token}" class="d-inline-flex align-items-center">
 					    <a class="text-white pr-3" th:href="@{/login(redirectUrl=${currentUrl})}">Log in</a>
 					</div>
                 </div>
@@ -126,7 +126,7 @@
             </div>
 
 			<p th:if="${trainingSessions == null or trainingSessions.isEmpty()}" class="errorMessage fs-5">There aren't any Training Sessions available.</p>
-			<p th:if="${token == null}" class="errorMessage fs-5">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to see your training sessions</p>
+			<p th:if="${session.token == null}" class="errorMessage fs-5">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to see your training sessions</p>
             <div class="row mt-4" th:each="trainingSession : ${trainingSessions}">
                 <div class="col-12">
                     <div class="owl-carousel service-carousel">
@@ -150,7 +150,7 @@
                     </div>
                 </div>
             </div>
-			<form th:if="${token != null}" th:action="@{/trainingSession}">
+			<form th:if="${session.token != null}" th:action="@{/trainingSession}">
 				<button type="submit" class="btn btn-primary w-100 mt-4">
 					Create Training Session
 				</button>

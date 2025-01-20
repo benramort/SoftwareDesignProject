@@ -31,10 +31,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
-					<div th:if="${token}" class="d-inline-flex align-items-center">
-					    <a class="text-white pr-3" th:href="@{/logout(token=${token})}">Log out</a>
+					<div th:if="${session.token}" class="d-inline-flex align-items-center">
+					    <a class="text-white pr-3" th:href="@{/logout(token=${session.token})}">Log out</a>
 					</div>
-					<div th:unless="${token}" class="d-inline-flex align-items-center">
+					<div th:unless="${session.token}" class="d-inline-flex align-items-center">
                         <a class="text-white pr-3" th:href="@{/login(redirectUrl=${currentUrl})}">Log in</a>
                     </div>
 
@@ -149,7 +149,7 @@
                                         <p><strong>Sport: </strong><span th:text="${challenge.sport}"></span></p>
                                         <p><strong>Goal: </strong><span th:text="${challenge.goal}"></span><span th:text="${challenge.isDistance ? ' km' : ' h'}"></span></p>
                                     </div>
-                                    <div th:if="${token != null && challenge != null}" class="col-md-4 d-flex flex-column justify-content-center">
+                                    <div th:if="${session.token != null && challenge != null}" class="col-md-4 d-flex flex-column justify-content-center">
 										<form th:action="@{/activeChallenge(redirectUrl=${currentUrl})}" method="post" class="p-4" style="display: flex; flex-direction: column;">
 											<input type="hidden" th:name="id" th:value="${challenge.id}" />
                                         	<button class="btn btn-primary mt-3 joinbutton">JOIN</button>
@@ -157,7 +157,7 @@
 										<p th:if="${errorMessageId == challenge.id}" th:text="${errorMessage}" class="text-danger mt-4"></p>
 										<p th:if="${successMessageId == challenge.id}" th:text="${successMessage}" class="text-success mt-4"></p>
                                     </div>
-										<p th:if="${token == null}" class="text-danger">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to join a challenge.</p>
+										<p th:if="${session.token == null}" class="text-danger">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to join a challenge.</p>
                                 </div>
                                 <div class="text-center">
                                 </div>

@@ -31,10 +31,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-lg-left mb-2 mb-lg-0">
-					<div th:if="${token}" class="d-inline-flex align-items-center">
-					    <a class="text-white pr-3" th:href="@{/logout(token=${token})}">Log out</a>
+					<div th:if="${session.token}" class="d-inline-flex align-items-center">
+					    <a class="text-white pr-3" th:href="@{/logout(token=${session.token})}">Log out</a>
 					</div>
-					<div th:unless="${token}" class="d-inline-flex align-items-center">
+					<div th:unless="${session.token}" class="d-inline-flex align-items-center">
                         <a class="text-white pr-3" th:href="@{/login(redirectUrl=${currentUrl})}">Log in</a>
                     </div>
 
@@ -113,8 +113,8 @@
             </div>
 
 
-			<p th:if="${token == null}" class="text-danger">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to see your challenges progress.</p>
-            <div th:if="${token != null && challenge != null}" class="row mt-4" th:each="challenge : ${challenges}">
+			<p th:if="${session.token == null}" class="text-danger">Please <a th:href="@{/login(redirectUrl=${currentUrl})}">login</a> to see your challenges progress.</p>
+            <div th:if="${session.token != null && challenge != null}" class="row mt-4" th:each="challenge : ${challenges}">
 			<p th:if="${challenges == null or challenges.isEmpty()}" class="errorMessage fs-5">There aren't any challenges available.</p>
                 <div class="col-12">
                     <div class="owl-carousel service-carousel">
@@ -131,7 +131,7 @@
                                         <p><strong>Sport: </strong><span th:text="${challenge.sport}"></span></p>
                                         <p><strong>Goal: </strong><span th:text="${challenge.goal}"></span><span th:text="${challenge.isDistance ? ' km' : ' h'}"></span></p>
                                     </div>
-                                    <div th:if="${token != null && challenge != null}" class="col-md-4 d-flex flex-column justify-content-center">									
+                                    <div th:if="${session.token != null && challenge != null}" class="col-md-4 d-flex flex-column justify-content-center">									
 										<p><strong>Progress: </strong><span th:text="${(challenge.progress * 100) + '%'}"></span></p>
                                     </div>
                                 </div>
@@ -173,8 +173,6 @@
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-secondary px-2 back-to-top"><i class="fa fa-angle-double-up"></i></a>
-
-
 </body>
 
 </html>

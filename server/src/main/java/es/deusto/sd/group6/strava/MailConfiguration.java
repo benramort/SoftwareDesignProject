@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import es.deusto.sd.group6.strava.external.MailServiceGateway;
 
-@Configuration
+
 public class MailConfiguration {
 	
 	@Value("${spring.mail.host}")		
@@ -46,8 +46,9 @@ public class MailConfiguration {
 	CommandLineRunner pruebita() {
 		return args -> {
 			System.out.println("Probando...");
-			MailServiceGateway mailServiceGateway = new MailServiceGateway();
+			MailServiceGateway mailServiceGateway = new MailServiceGateway(getJavaMailSender());
 			mailServiceGateway.sendSimpleMessage("benat.ramirez@opendeusto.es", "Hola");
+			System.out.println("Prueba concluida");
 		};
 		
 	}

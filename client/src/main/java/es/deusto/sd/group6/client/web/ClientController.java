@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import es.deusto.sd.group6.client.data.TrainingSession;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class ClientController {
@@ -29,24 +30,21 @@ public class ClientController {
 	@Autowired
 	IStravaServiceProxy stravaService;
 
-	private Long token = null; 
+//	private Long token = null; 
 	
 	@ModelAttribute
-	public void addAttributes(Model model, HttpServletRequest request) {
-
+	public void addAttributes(Model model, HttpServletRequest request, HttpSession session ) {
+		
 		String currentUrl = ServletUriComponentsBuilder.fromRequestUri(request).toUriString();
 		model.addAttribute("currentUrl", currentUrl); // Makes current URL available in all templates.
-		if (token != null) {
-			model.addAttribute("token", token);
-		}
 	}
 	
 	@GetMapping("/")
-	public String home(Model model) {
+	public String home(Model model, HttpSession session) {
 	    List<ChallengeProgress> challenges;
-
+	    System.out.println("Token: " + session.getAttribute("token"));
 	    try {
-	        challenges = stravaService.getAcceptedChallengesProgress(token);
+	        challenges = stravaService.getAcceptedChallengesProgress((long) session.getAttribute("token"));
 	        model.addAttribute("challenges", challenges);
 	        
 	    } catch (RuntimeException e) {
@@ -121,10 +119,12 @@ public class ClientController {
 			@RequestParam(value = "password") String password,
 			@RequestParam(value = "redirectUrl") String redirectUrl,
 			Model model,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes,
+			HttpSession session) {
 		try {
 			model.addAttribute("redirectUrl", redirectUrl);
-			token = stravaService.login(email, password);
+			long token = stravaService.login(email, password);
+			session.setAttribute("token", token);
 			return "redirect:"+ redirectUrl;
 		} catch (RuntimeException e) {
 			if (e.getMessage().equals("Invalid credentials")) {
@@ -141,10 +141,11 @@ public class ClientController {
 	@GetMapping("/logout")
 	public String logout(
 			@RequestParam(value="token") Long token,
-			Model model) {
+			Model model,
+			HttpSession session) {
 		try {
-			this.token = null;
 			stravaService.logout(token);
+			session.removeAttribute("token");
 		} catch (RuntimeException e) {
 			System.err.println("Ha oucurrido un error: " + e.getMessage());
             e.printStackTrace();
@@ -167,7 +168,8 @@ public class ClientController {
             @RequestParam("goal") float goal,
             @RequestParam("sport") Sport sport,
             Model model,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session) {
         try {
         	System.out.println(isDistance);
         	boolean isDistanceBoolean;
@@ -180,7 +182,7 @@ public class ClientController {
             	isDistanceBoolean = false;
             }
             Challenge challenge = new Challenge(null, name, startDateParsed, endDateParsed, isDistanceBoolean, goal, sport);
-            stravaService.createChallenge(token, challenge);
+            stravaService.createChallenge((long) session.getAttribute("token"), challenge);
 			redirectAttributes.addFlashAttribute("successMessage", "Challenge created successfully!");
 
         } catch (Exception e) {
@@ -215,9 +217,10 @@ public class ClientController {
 	public String joinActiveChallengeBid(@RequestParam("id") Long id,
 			@RequestParam(value = "redirectUrl", required = false) String redirectUrl,
 			Model model,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes,
+			HttpSession session) {
 		try {
-			stravaService.joinChallenge(id, token);
+			stravaService.joinChallenge(id, (long) session.getAttribute("token"));
 			redirectAttributes.addFlashAttribute("successMessageId", id);
 			redirectAttributes.addFlashAttribute("successMessage", "Challenge joined!");
 		} catch (RuntimeException e) {
@@ -241,7 +244,8 @@ public class ClientController {
 			@RequestParam("distance") float distance,
 			@RequestParam("duration") float duration,
 			Model model,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes,
+			HttpSession session) {
 
 		try {
 			Sport sportEnum = Sport.valueOf(sport.toUpperCase());
@@ -249,7 +253,7 @@ public class ClientController {
 			Date startDateParsed = formatter.parse(startDate);
 			TrainingSession trainingSession = new TrainingSession(0L, title, sportEnum, startDateParsed, distance, duration);
 
-			stravaService.createTrainingSession(trainingSession, token);
+			stravaService.createTrainingSession(trainingSession, (long) session.getAttribute("token"));
 			redirectAttributes.addFlashAttribute("successMessage", "Training session created successfully!");
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("errorMessage", "Failed to create a trainig session: " + e.getMessage());
@@ -259,9 +263,9 @@ public class ClientController {
 	}
 	
 	@GetMapping("/trainingSessions")
-    public String getTrainingSession(Model model) {
+    public String getTrainingSession(Model model, HttpSession session) {
 		try {
-			List<TrainingSession> trainingSessions = stravaService.getTrainingSessions(token);
+			List<TrainingSession> trainingSessions = stravaService.getTrainingSessions((long) session.getAttribute("token"));
 			model.addAttribute("trainingSessions", trainingSessions);
 		} catch (RuntimeException e) {
 			model.addAttribute("errorMessage", "Failed to load training sessions: " + e.getMessage());
@@ -273,9 +277,10 @@ public class ClientController {
     public String getTrainingSessionByDate(
     	    @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
     	    @RequestParam(value = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
-    		Model model) {
+    		Model model,
+    		HttpSession session) {
 		try {
-			List<TrainingSession> trainingSessions = stravaService.getTrainingSessionsByDate(token,startDate,endDate);
+			List<TrainingSession> trainingSessions = stravaService.getTrainingSessionsByDate((long) session.getAttribute("token"), startDate,endDate);
 			model.addAttribute("trainingSessions", trainingSessions);
 			model.addAttribute("startDate", startDate);
 	        model.addAttribute("endDate", endDate);
