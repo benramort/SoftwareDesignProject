@@ -3,6 +3,7 @@ package es.deusto.sd.group6.strava.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Service;
 
@@ -26,14 +27,18 @@ public class TrainingSessionService {
 	}
 
 	
-	public void createTrainingSession(long token,long id, String title, Sport sport, Date startDate, float distance, float duration) {
+	public void createTrainingSession(long token, String title, Sport sport, Date startDate, float distance, float duration) {
 		User user = userService.getUser(token);
+		
 		if(user != null) {
-			TrainingSession trainingSession = new TrainingSession(id, title, sport, startDate, distance, duration);
+			TrainingSession trainingSession = new TrainingSession(user, title, sport, startDate, distance, duration);
 			trainingSessionRepository.save(trainingSession);
 			user.addTrainingSession(trainingSession); //Lo he cambiado
+			System.out.println("usuario: "+user.getEmail()+" training: "+trainingSession.getId());
 			userRepository.save(user);
+
 		} else {
+			System.out.println("hola1");
 			throw new RuntimeException("User not found");
 		}
 	}

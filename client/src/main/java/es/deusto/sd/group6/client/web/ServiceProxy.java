@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import es.deusto.sd.group6.client.data.Challenge;
-import es.deusto.sd.group6.client.data.LoginDTO;
+import es.deusto.sd.group6.client.data.ChallengeProgress;
+import es.deusto.sd.group6.client.data.Login;
 import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.User;
 
@@ -84,7 +85,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 
 	@Override
 	public Long login(String email, String password) {
-		LoginDTO login = new LoginDTO(email, password);
+		Login login = new Login(email, password);
 		try {
 			Long token = restTemplate.postForObject(apiBaseUrl + "/users/login", login, Long.class);
 			return token;
@@ -110,7 +111,7 @@ public class ServiceProxy implements IStravaServiceProxy {
 	}
 
 	@Override
-	public 	void createTrainingSession(TrainingSession trainingSession, long token) {
+	public void createTrainingSession(TrainingSession trainingSession, long token) {
 
 		String url = apiBaseUrl + "/trainingSessions?token=" + token;
 
@@ -119,11 +120,86 @@ public class ServiceProxy implements IStravaServiceProxy {
 		} catch (HttpStatusCodeException e) {
 			switch (e.getStatusCode().value()) {
 			case 403 -> throw new RuntimeException("User not found");
-
-			//
 			default -> throw new RuntimeException("Create training session failed with status code: " + e.getStatusCode());
 			}
 		}
 	}
+	
+	@Override
+	public List<TrainingSession> getTrainingSessions(long token){
+		String url = apiBaseUrl + "/trainingSessions?token=" + token;
+		try {
+			return restTemplate.exchange(
+		            url,
+		            HttpMethod.GET,
+		            null,
+		            new ParameterizedTypeReference<List<TrainingSession>>() {}
+		        ).getBody();
+		} catch (HttpStatusCodeException e) {
+			switch (e.getStatusCode().value()) {
+			case 403 -> throw new RuntimeException("User not found");
+			default -> throw new RuntimeException("Failed to retrieve training sessions: " + e.getStatusText());
+			}
+		}
+	}
+	
+	@Override
+	public List<TrainingSession> getTrainingSessionsByDate(long token, Date startDate, Date endDate)
+	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	    
+	    String formattedStartDate = dateFormat.format(startDate);
+	    String formattedEndDate = dateFormat.format(endDate);
+		String url = apiBaseUrl + "/trainingSessions/byDate?token=" + token+"&startDate="+formattedStartDate+"&endDate="+formattedEndDate;
+		System.out.println(url);
+		try {
+			return restTemplate.exchange(
+		            url,
+		            HttpMethod.GET,
+		            null,
+		            new ParameterizedTypeReference<List<TrainingSession>>() {}
+		        ).getBody();
+		} catch (HttpStatusCodeException e) {
+			switch (e.getStatusCode().value()) {
+			case 403 -> throw new RuntimeException("User not found");
+			default -> throw new RuntimeException("Failed to retrieve training sessions: " + e.getStatusText());
+			}
+		}
+	}
+	
+	@Override
+	public List<ChallengeProgress> getAcceptedChallengesProgress(long token){
+		String url = apiBaseUrl + "/challenges/progress?token=" + token;
+        try {
+        	return restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<ChallengeProgress>>() {}
+                ).getBody();
+        } catch (HttpStatusCodeException e) {
+            switch (e.getStatusCode().value()) {
+                case 404 -> throw new RuntimeException("No challenges found.");
+                default -> throw new RuntimeException("Failed to retrieve challenges: " + e.getStatusText());
+            }
+        }
+	}
+
+
+	@Override
+    public void createChallenge(long token, Challenge challenge) {
+        String url = apiBaseUrl + "/challenges?token=" + token;
+        try {
+            restTemplate.postForObject(url, challenge, Void.class);
+            System.out.println(challenge.isDistance());
+        } catch (HttpStatusCodeException e) {
+            switch (e.getStatusCode().value()) {
+
+                case 403 -> throw new RuntimeException("User not found");
+
+                default -> throw new RuntimeException("Create challenge failed with status code: " + e.getStatusCode());
+            }
+        }
+    }
 }
 

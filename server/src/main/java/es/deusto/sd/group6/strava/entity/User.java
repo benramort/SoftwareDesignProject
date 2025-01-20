@@ -60,7 +60,7 @@ public class User {
     )
 	private List<Challenge> acceptedChallenges;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<TrainingSession> lTrainingSessions;
 
 	public User() {}
@@ -180,7 +180,6 @@ public class User {
 
 	public void addTrainingSession(TrainingSession trainingSession) {
 		this.lTrainingSessions.add(trainingSession);
-		lTrainingSessions.sort(null);
 	}
 
 	@Override

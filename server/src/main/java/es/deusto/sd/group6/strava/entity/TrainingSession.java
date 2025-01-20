@@ -1,6 +1,7 @@
 package es.deusto.sd.group6.strava.entity;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import es.deusto.sd.group6.strava.dto.TrainingSessionDTO;
@@ -9,6 +10,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
@@ -34,7 +38,20 @@ public class TrainingSession {
 	@Column(nullable = false)
 	private float duration;
 	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+	
 	public TrainingSession() {}
+	
+	public TrainingSession(User user, String title, Sport sport, Date startDate, float distance,
+			float duration) {
+		this.title = title;
+		this.sport = sport;
+		this.startDate = startDate;
+		this.distance = distance;
+		this.duration = duration;
+	}
 	
 	public TrainingSession(long id, String title, Sport sport, Date startDate, float distance,
 			float duration) {

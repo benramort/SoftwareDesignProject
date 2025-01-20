@@ -12,15 +12,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import es.deusto.sd.group6.client.data.AccountType;
 import es.deusto.sd.group6.client.data.Challenge;
+import es.deusto.sd.group6.client.data.ChallengeProgress;
 import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.User;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import es.deusto.sd.group6.client.data.Challenge;
 
-import es.deusto.sd.group6.client.data.Sport;
 import es.deusto.sd.group6.client.data.TrainingSession;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -44,18 +43,25 @@ public class ClientController {
 	
 	@GetMapping("/")
 	public String home(Model model) {
-//		stravaService.createUser(new User("user1", AccountType.FACEBOOK, "password1", "name1", "surname1", new Date(), -1, -1, -1f, -1f));
-//		System.out.println("Hola");
-//		Long token = stravaService.login("user1", "password1");
-//		System.out.println(token);
-//		stravaService.logout(token);
+	    List<ChallengeProgress> challenges;
+
+	    try {
+	        challenges = stravaService.getAcceptedChallengesProgress(token);
+	        model.addAttribute("challenges", challenges);
+	        
+	    } catch (RuntimeException e) {
+	        model.addAttribute("errorMessage", "Failed to load challenges: " + e.getMessage());
+	    }
 		return "index";
 	}
 	
 	@GetMapping("/login")
 	public String showLoginPage(
-			@RequestParam(value = "redirectUrl") String redirectUrl,
+			@RequestParam(value = "redirectUrl", required = false) String redirectUrl,
 			Model model) {
+		if (redirectUrl == null) {
+			redirectUrl = "/";
+		}
 		model.addAttribute("redirectUrl", redirectUrl);
 		return "login";
 	}
@@ -137,6 +143,7 @@ public class ClientController {
 			@RequestParam(value="token") Long token,
 			Model model) {
 		try {
+			this.token = null;
 			stravaService.logout(token);
 		} catch (RuntimeException e) {
 			System.err.println("Ha oucurrido un error: " + e.getMessage());
@@ -145,11 +152,48 @@ public class ClientController {
 		
 		return "redirect:/";
 	}
+	
+	@GetMapping("/challenges")
+	public String showChallengesForm(Model model) {
+		return "createChallenge";
+	}
+	
+	@PostMapping("/challenges") 
+    public String createChallenge(
+            @RequestParam("name") String name,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate,
+            @RequestParam("isDistance") String isDistance,
+            @RequestParam("goal") float goal,
+            @RequestParam("sport") Sport sport,
+            Model model,
+            RedirectAttributes redirectAttributes) {
+        try {
+        	System.out.println(isDistance);
+        	boolean isDistanceBoolean;
+        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            Date startDateParsed = formatter.parse(startDate);
+            Date endDateParsed = formatter.parse(endDate);
+            if(isDistance.equals("KM")) {
+            	isDistanceBoolean = true;
+            }else {
+            	isDistanceBoolean = false;
+            }
+            Challenge challenge = new Challenge(null, name, startDateParsed, endDateParsed, isDistanceBoolean, goal, sport);
+            stravaService.createChallenge(token, challenge);
+			redirectAttributes.addFlashAttribute("successMessage", "Challenge created successfully!");
+
+        } catch (Exception e) {
+        	e.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "Failed to create a challenge: " + e.getMessage());
+        }
+        return "redirect:/challenges";
+    }
 		
 	
 	@GetMapping("/activeChallenges")
 	public String getActiveChallenges(
-	    @RequestParam(value = "filterSport", required = false) Sport filterSport,
+	    @RequestParam(value = "filterSport", required = false, defaultValue = "ANY") Sport filterSport,
 	    @RequestParam(value = "filterDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date filterDate,
 	    Model model) {
 
@@ -161,22 +205,21 @@ public class ClientController {
 	        model.addAttribute("filterSport", filterSport);
 	        model.addAttribute("filterDate", filterDate);
 	        
-	        System.out.println("Challenge list: " + challenges.size());
 	    } catch (RuntimeException e) {
 	        model.addAttribute("errorMessage", "Failed to load challenges: " + e.getMessage());
 	    }
 
 	    return "challengeList";
 	}
-	@PostMapping("/challenge")
-	public String makeBid(@RequestParam("id") Long id,
+	@PostMapping("/activeChallenge")
+	public String joinActiveChallengeBid(@RequestParam("id") Long id,
 			@RequestParam(value = "redirectUrl", required = false) String redirectUrl,
 			Model model,
 			RedirectAttributes redirectAttributes) {
 		try {
 			stravaService.joinChallenge(id, token);
 			redirectAttributes.addFlashAttribute("successMessageId", id);
-			redirectAttributes.addFlashAttribute("successMessage", "Challenge join!");
+			redirectAttributes.addFlashAttribute("successMessage", "Challenge joined!");
 		} catch (RuntimeException e) {
 			redirectAttributes.addFlashAttribute("errorMessageId", id);
 			redirectAttributes.addFlashAttribute("errorMessage", "Failed to join the challenge: " + e.getMessage());
@@ -185,19 +228,20 @@ public class ClientController {
 		return "redirect:" + (redirectUrl != null && !redirectUrl.isEmpty() ? redirectUrl : "/");
 	}
 
-	@GetMapping("/trainingSessions")
+	@GetMapping("/trainingSession")
     public String showTrainingSessionForm(Model model) {
         return "createTrainingSession";
     }
 	
-	@PostMapping("/trainingSessions") 
+	@PostMapping("/trainingSession") 
 	public String createTrainingSession(
 			@RequestParam("title") String title,
 			@RequestParam("sport") String sport,
 			@RequestParam("startDate") String startDate,
 			@RequestParam("distance") float distance,
 			@RequestParam("duration") float duration,
-			Model model) {
+			Model model,
+			RedirectAttributes redirectAttributes) {
 
 		try {
 			Sport sportEnum = Sport.valueOf(sport.toUpperCase());
@@ -206,11 +250,39 @@ public class ClientController {
 			TrainingSession trainingSession = new TrainingSession(0L, title, sportEnum, startDateParsed, distance, duration);
 
 			stravaService.createTrainingSession(trainingSession, token);
-			model.addAttribute("message", "Training session created successfully!");
+			redirectAttributes.addFlashAttribute("successMessage", "Training session created successfully!");
 		} catch (Exception e) {
-			model.addAttribute("error", "An error occurred: " + e.getMessage());
+			redirectAttributes.addFlashAttribute("errorMessage", "Failed to create a trainig session: " + e.getMessage());
 		}
-		return "createTrainingSession"; 
+		return "redirect:/trainingSession";
 
 	}
+	
+	@GetMapping("/trainingSessions")
+    public String getTrainingSession(Model model) {
+		try {
+			List<TrainingSession> trainingSessions = stravaService.getTrainingSessions(token);
+			model.addAttribute("trainingSessions", trainingSessions);
+		} catch (RuntimeException e) {
+			model.addAttribute("errorMessage", "Failed to load training sessions: " + e.getMessage());
+		}
+
+        return "TrainingSessionList";
+    }
+	@GetMapping("/trainingSessions/byDate")
+    public String getTrainingSessionByDate(
+    	    @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+    	    @RequestParam(value = "endDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate,
+    		Model model) {
+		try {
+			List<TrainingSession> trainingSessions = stravaService.getTrainingSessionsByDate(token,startDate,endDate);
+			model.addAttribute("trainingSessions", trainingSessions);
+			model.addAttribute("startDate", startDate);
+	        model.addAttribute("endDate", endDate);
+		} catch (RuntimeException e) {
+			model.addAttribute("errorMessage", "Failed to load training sessions: " + e.getMessage());
+		}
+
+        return "TrainingSessionList";
+    }
 }
